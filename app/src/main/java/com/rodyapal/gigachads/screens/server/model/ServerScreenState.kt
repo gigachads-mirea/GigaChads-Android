@@ -3,8 +3,16 @@ package com.rodyapal.gigachads.screens.server.model
 import com.rodyapal.gigachads.model.entity.Post
 import com.rodyapal.gigachads.model.entity.Server
 
-data class ServerScreenState(
-	val server: Server,
-	val posts: List<Post>,
-	val gameName: String
-)
+sealed class ServerScreenState {
+	data class Info(
+		val server: Server,
+		val latestPost: Post,
+		val gameName: String
+	) : ServerScreenState()
+
+	data class Posts(
+		val serverName: String,
+		val posts: List<Post>
+	) : ServerScreenState()
+}
+

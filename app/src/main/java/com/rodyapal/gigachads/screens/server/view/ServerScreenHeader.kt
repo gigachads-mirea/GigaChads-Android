@@ -16,12 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rodyapal.gigachads.screens.server.model.ServerScreenState
-import com.rodyapal.gigachads.utils.MOCK_SERVER_SCREEN_STATE
+import com.rodyapal.gigachads.utils.MOCK_SERVER_SCREEN_STATE_INFO
 
 @Composable
 fun ServerScreenHeader(
 	modifier: Modifier = Modifier,
-	state: ServerScreenState
+	state: ServerScreenState.Info
 ) {
 	Column(
 		modifier = modifier
@@ -82,6 +82,6 @@ fun ServerScreenHeader(
 @Composable
 fun ServerScreenHeaderPreview() {
 	ServerScreenHeader(
-		state = MOCK_SERVER_SCREEN_STATE
+		state = MOCK_SERVER_SCREEN_STATE_INFO
 	)
 }
