@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -59,7 +60,7 @@ fun RegisterScreenDisplay(
 
 		Text(
 			modifier = Modifier.fillMaxWidth(),
-			text = "Sign up",
+			text = stringResource(R.string.text_sign_up),
 			fontWeight = MaterialTheme.typography.titleLarge.fontWeight,
 			fontSize = MaterialTheme.typography.titleLarge.fontSize
 		)
@@ -70,7 +71,7 @@ fun RegisterScreenDisplay(
 			modifier = Modifier.fillMaxWidth(),
 			value = state.email,
 			onValueChange = onEmailInput,
-			label = { Text(text = "Email") },
+			label = { Text(text = stringResource(R.string.text_email)) },
 			isError = !state.emailState.isValidOrUntouched(),
 			keyboardActions = KeyboardActions(
 				onNext = { focusManager.moveFocus(FocusDirection.Down) }
@@ -87,7 +88,7 @@ fun RegisterScreenDisplay(
 			modifier = Modifier.fillMaxWidth(),
 			value = state.password,
 			onValueChange = onPasswordInput,
-			label = { Text(text = "Password") },
+			label = { Text(text = stringResource(R.string.text_password)) },
 			isError = !state.passwordState.isValidOrUntouched(),
 			keyboardActions = KeyboardActions(
 				onNext = { focusManager.moveFocus(FocusDirection.Down) }
@@ -105,7 +106,7 @@ fun RegisterScreenDisplay(
 						painter =  painterResource(
 							id = if (state.isPasswordVisible) R.drawable.baseline_visibility_off_24 else R.drawable.baseline_visibility_24
 						),
-						contentDescription = "Show password"
+						contentDescription = stringResource(R.string.text_show_password)
 					)
 				}
 			}
@@ -117,7 +118,7 @@ fun RegisterScreenDisplay(
 			modifier = Modifier.fillMaxWidth(),
 			value = state.confirm,
 			onValueChange = onConfirmInput,
-			label = { Text(text = "Confirm password") },
+			label = { Text(text = stringResource(R.string.text_confirm_password)) },
 			isError = !state.confirmState.isValidOrUntouched(),
 			keyboardActions = KeyboardActions(
 				onDone = { focusManager.clearFocus() }
@@ -135,7 +136,7 @@ fun RegisterScreenDisplay(
 						painter =  painterResource(
 							id = if (state.isConfirmVisible) R.drawable.baseline_visibility_off_24 else R.drawable.baseline_visibility_24
 						),
-						contentDescription = "Show password"
+						contentDescription = stringResource(R.string.text_show_password)
 					)
 				}
 			}
@@ -151,13 +152,13 @@ fun RegisterScreenDisplay(
 			Button(
 				onClick = onRegisterClick
 			) {
-				Text(text = "Sign up")
+				Text(text = stringResource(R.string.text_sign_up))
 			}
 
 			OutlinedButton(
 				onClick = onAbortClick
 			) {
-				Text(text = "Abort")
+				Text(text = stringResource(R.string.text_abort))
 			}
 		}
 	}

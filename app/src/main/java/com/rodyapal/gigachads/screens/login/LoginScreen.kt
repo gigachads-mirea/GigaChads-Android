@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -55,7 +56,7 @@ fun LoginScreenDisplay(
 
 		Text(
 			modifier = Modifier.fillMaxWidth(),
-			text = "Sign in",
+			text = stringResource(R.string.text_sign_in),
 			fontWeight = MaterialTheme.typography.titleLarge.fontWeight,
 			fontSize = MaterialTheme.typography.titleLarge.fontSize
 		)
@@ -66,7 +67,7 @@ fun LoginScreenDisplay(
 			modifier = Modifier.fillMaxWidth(),
 			value = state.email,
 			onValueChange = onEmailInput,
-			label = { Text(text = "Email") },
+			label = { Text(text = stringResource(R.string.text_email)) },
 			isError = !state.emailState.isValidOrUntouched(),
 			keyboardActions = KeyboardActions(
 				onNext = { focusManager.moveFocus(FocusDirection.Down) }
@@ -83,7 +84,7 @@ fun LoginScreenDisplay(
 			modifier = Modifier.fillMaxWidth(),
 			value = state.password,
 			onValueChange = onPasswordInput,
-			label = { Text(text = "Password") },
+			label = { Text(text = stringResource(R.string.text_password)) },
 			isError = !state.passwordState.isValidOrUntouched(),
 			keyboardActions = KeyboardActions(
 				onDone = { focusManager.clearFocus() }
@@ -101,7 +102,7 @@ fun LoginScreenDisplay(
 						painter =  painterResource(
 							id = if (state.isPasswordVisible) R.drawable.baseline_visibility_off_24 else R.drawable.baseline_visibility_24
 						),
-						contentDescription = "Show password"
+						contentDescription = stringResource(R.string.text_show_password)
 					)
 				}
 			}
@@ -117,13 +118,13 @@ fun LoginScreenDisplay(
 			Button(
 				onClick = onLoginClick
 			) {
-				Text(text = "Sign in")
+				Text(text = stringResource(R.string.text_sign_in))
 			}
 
 			FilledTonalButton(
 				onClick = onRegisterClick
 			) {
-				Text(text = "Sign up")
+				Text(text = stringResource(R.string.text_sign_up))
 			}
 		}
 	}
