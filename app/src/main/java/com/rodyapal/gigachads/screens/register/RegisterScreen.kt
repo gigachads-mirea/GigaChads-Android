@@ -1,4 +1,4 @@
-package com.rodyapal.gigachads.screens.login
+package com.rodyapal.gigachads.screens.register
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +16,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,17 +34,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rodyapal.gigachads.R
 import com.rodyapal.gigachads.screens.login.model.LoginScreenState
+import com.rodyapal.gigachads.screens.register.model.RegisterScreenState
 import com.rodyapal.gigachads.utils.TextFieldState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreenDisplay(
-	state: LoginScreenState,
+fun RegisterScreenDisplay(
+	state: RegisterScreenState,
 	onEmailInput: (String) -> Unit,
 	onPasswordInput: (String) -> Unit,
-	onLoginClick: () -> Unit,
+	onConfirmInput: (String) -> Unit,
 	onRegisterClick: () -> Unit,
+	onAbortClick: () -> Unit,
 	onPasswordVisibilityClick: () -> Unit,
+	onConfirmVisibilityClick: () -> Unit,
 ) {
 	Column(
 		modifier = Modifier
@@ -56,7 +60,7 @@ fun LoginScreenDisplay(
 
 		Text(
 			modifier = Modifier.fillMaxWidth(),
-			text = stringResource(R.string.text_sign_in),
+			text = stringResource(R.string.text_sign_up),
 			fontWeight = MaterialTheme.typography.titleLarge.fontWeight,
 			fontSize = MaterialTheme.typography.titleLarge.fontSize
 		)
@@ -87,10 +91,10 @@ fun LoginScreenDisplay(
 			label = { Text(text = stringResource(R.string.text_password)) },
 			isError = !state.passwordState.isValidOrUntouched(),
 			keyboardActions = KeyboardActions(
-				onDone = { focusManager.clearFocus() }
+				onNext = { focusManager.moveFocus(FocusDirection.Down) }
 			),
 			keyboardOptions = KeyboardOptions(
-				imeAction = ImeAction.Done,
+				imeAction = ImeAction.Next,
 				keyboardType = KeyboardType.Password
 			),
 			visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -110,21 +114,51 @@ fun LoginScreenDisplay(
 
 		Spacer(modifier = Modifier.height(12.dp))
 
+		OutlinedTextField(
+			modifier = Modifier.fillMaxWidth(),
+			value = state.confirm,
+			onValueChange = onConfirmInput,
+			label = { Text(text = stringResource(R.string.text_confirm_password)) },
+			isError = !state.confirmState.isValidOrUntouched(),
+			keyboardActions = KeyboardActions(
+				onDone = { focusManager.clearFocus() }
+			),
+			keyboardOptions = KeyboardOptions(
+				imeAction = ImeAction.Done,
+				keyboardType = KeyboardType.Password
+			),
+			visualTransformation = if (state.isConfirmVisible) VisualTransformation.None else PasswordVisualTransformation(),
+			trailingIcon = {
+				IconButton(
+					onClick = onConfirmVisibilityClick
+				) {
+					Icon(
+						painter =  painterResource(
+							id = if (state.isConfirmVisible) R.drawable.baseline_visibility_off_24 else R.drawable.baseline_visibility_24
+						),
+						contentDescription = stringResource(R.string.text_show_password)
+					)
+				}
+			}
+		)
+
+		Spacer(modifier = Modifier.height(12.dp))
+
 		Row(
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier.fillMaxWidth()
 		) {
 			Button(
-				onClick = onLoginClick
-			) {
-				Text(text = stringResource(R.string.text_sign_in))
-			}
-
-			FilledTonalButton(
 				onClick = onRegisterClick
 			) {
 				Text(text = stringResource(R.string.text_sign_up))
+			}
+
+			OutlinedButton(
+				onClick = onAbortClick
+			) {
+				Text(text = stringResource(R.string.text_abort))
 			}
 		}
 	}
@@ -132,15 +166,13 @@ fun LoginScreenDisplay(
 
 @Preview
 @Composable
-fun LoginPreview() {
-	LoginScreenDisplay(
-		LoginScreenState(
-			"",
-			"",
-			TextFieldState.UNTOUCHED,
-			TextFieldState.UNTOUCHED,
-			true
+fun RegisterPreview() {
+	RegisterScreenDisplay(
+		RegisterScreenState(
+			"", "", "",
+			TextFieldState.UNTOUCHED, TextFieldState.UNTOUCHED, TextFieldState.UNTOUCHED,
+			true, isConfirmVisible = true
 		),
-		{}, {}, {}, {}, {}
+		{}, {}, {}, {}, {}, {}, {}
 	)
 }
