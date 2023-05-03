@@ -1,5 +1,6 @@
 package com.rodyapal.gigachads.utils
 
+import com.rodyapal.gigachads.model.entity.Comment
 import com.rodyapal.gigachads.model.entity.Post
 import com.rodyapal.gigachads.model.entity.Server
 import com.rodyapal.gigachads.model.entity.ServerBasicInfo
@@ -94,3 +95,12 @@ val MOCK_SERVER_SCREEN_STATE_POSTS = ServerScreenState.Posts(
 	serverName = "Generic name"
 )
 
+@Deprecated("Dev only")
+val MOCK_COMMENTS = listOf(
+	Comment("John", "Great post!", System.currentTimeMillis(), 10, 1L, 100L),
+	Comment("Jane", "I disagree with your opinion.", 1609600000000L, 5, 2L, 100L),
+	Comment("Mike", "Thanks for sharing.", 1622505600000L, 8, 3L, 101L),
+	Comment("Sarah", "This is so helpful, thanks!", 1630454400000L, 12, 4L, 102L),
+	Comment("Tom", "Interesting, I'd like to know more about this topic.", 1633084800000L, 6, 5L, 102L),
+	Comment("Emily", "I'm confused, can you please explain it better?", 1640995200000L, 3, 6L, 103L)
+)
