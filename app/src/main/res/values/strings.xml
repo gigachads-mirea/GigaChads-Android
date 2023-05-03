@@ -7,4 +7,8 @@
     <string name="text_confirm_password">Confirm password</string>
     <string name="text_abort">Abort</string>
     <string name="text_sign_in">Sign in</string>
+    <string name="description_like_post">Like post</string>
+    <string name="text_your_comment">Your comment</string>
+    <string name="description_confirm_comment">Confirm comment</string>
+    <string name="text_view_comments">View comments</string>
 </resources>
