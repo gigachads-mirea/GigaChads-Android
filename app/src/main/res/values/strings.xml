@@ -11,4 +11,6 @@
     <string name="text_your_comment">Your comment</string>
     <string name="description_confirm_comment">Confirm comment</string>
     <string name="text_view_comments">View comments</string>
+    <string name="text_favorite_servers">Favorite servers</string>
+    <string name="text_no_fav_servers">You have no favorite servers</string>
 </resources>

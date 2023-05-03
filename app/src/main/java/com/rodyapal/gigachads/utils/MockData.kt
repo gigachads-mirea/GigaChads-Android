@@ -3,14 +3,14 @@ package com.rodyapal.gigachads.utils
 import com.rodyapal.gigachads.model.entity.Comment
 import com.rodyapal.gigachads.model.entity.Post
 import com.rodyapal.gigachads.model.entity.Server
-import com.rodyapal.gigachads.model.entity.ServerBasicInfo
+import com.rodyapal.gigachads.screens.favservers.model.ServerBasicInfo
 import com.rodyapal.gigachads.screens.server.model.ServerScreenState
 
 @Deprecated("Dev only")
 val MOCK_SERVER_BASIC_INFO = List(20) { index ->
 	ServerBasicInfo(
-		name = "Server ${index + 1}",
-		description = "This is a description for server ${index + 1}"
+		gameName = "Game name",
+		serverName = "Server ${index + 1}"
 	)
 }
 

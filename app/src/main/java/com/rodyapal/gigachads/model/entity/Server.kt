@@ -28,10 +28,3 @@ data class ServerWithPosts(
 	)
 	val posts: List<Post>
 )
-
-data class ServerBasicInfo(
-	val name: String,
-	val description: String,
-)
-
-fun Server.toBasicInfo() = ServerBasicInfo(name, description)
