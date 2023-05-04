@@ -27,8 +27,8 @@ fun SearchScreenDisplay(
 	) {
 		items(state.searchHistory.size) {
 			ServerSearchItem(
-				title = state.searchHistory[it].name,
-				description = state.searchHistory[it].description
+				title = state.searchHistory[it].serverName,
+				description = state.searchHistory[it].gameName
 			)
 		}
 	}

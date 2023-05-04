@@ -30,8 +30,8 @@ fun SearchScreenSearch(
 		) {
 			items(state.suggestions.size) {
 				ServerSearchItem(
-					title = state.suggestions[it].name,
-					description = state.suggestions[it].description
+					title = state.suggestions[it].serverName,
+					description = state.suggestions[it].gameName
 				)
 			}
 		}

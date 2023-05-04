@@ -1,6 +1,6 @@
 package com.rodyapal.gigachads.screens.search.model
 
-import com.rodyapal.gigachads.model.entity.ServerBasicInfo
+import com.rodyapal.gigachads.screens.favservers.model.ServerBasicInfo
 
 sealed class SearchScreenState {
 
