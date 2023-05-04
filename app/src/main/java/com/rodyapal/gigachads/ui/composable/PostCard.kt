@@ -1,5 +1,6 @@
-package com.rodyapal.gigachads.screens.server.view
+package com.rodyapal.gigachads.ui.composable
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,6 +56,11 @@ fun PostCard(
 				maxLines = 3,
 				textAlign = TextAlign.Start,
 				overflow = TextOverflow.Ellipsis,
+				onTextLayout = {
+					if (it.didOverflowWidth) {
+						Log.d("TEXT", "Overflow")
+					}
+				}
 			)
 
 			Spacer(modifier = Modifier.height(12.dp))

@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rodyapal.gigachads.screens.server.model.ServerScreenState
-import com.rodyapal.gigachads.screens.server.view.PostCard
+import com.rodyapal.gigachads.ui.composable.PostCard
 import com.rodyapal.gigachads.screens.server.view.ServerScreenHeader
 import com.rodyapal.gigachads.utils.MOCK_SERVER_SCREEN_STATE_INFO
 
