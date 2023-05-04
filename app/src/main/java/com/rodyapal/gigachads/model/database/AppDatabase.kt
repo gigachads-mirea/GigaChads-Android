@@ -1,6 +1,7 @@
 package com.rodyapal.gigachads.model.database
 
 import androidx.room.Database
+import androidx.room.RoomDatabase
 import com.rodyapal.gigachads.model.dao.CommentDao
 import com.rodyapal.gigachads.model.dao.GameDao
 import com.rodyapal.gigachads.model.dao.PostDao
@@ -17,7 +18,7 @@ import com.rodyapal.gigachads.model.entity.User
 	entities = [Comment::class, Game::class, Post::class, Server::class, ServerUserCrossRef::class, User::class],
 	version = 1
 )
-abstract class AppDatabase {
+abstract class AppDatabase : RoomDatabase() {
 	abstract fun commentDao(): CommentDao
 	abstract fun gameDao(): GameDao
 	abstract fun postDao(): PostDao
