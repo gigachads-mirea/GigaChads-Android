@@ -15,10 +15,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -31,13 +39,68 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.rodyapal.gigachads.R
+import com.rodyapal.gigachads.screens.Screen
+import com.rodyapal.gigachads.screens.login.model.LoginScreenEvent
 import com.rodyapal.gigachads.screens.login.model.LoginScreenState
 import com.rodyapal.gigachads.utils.TextFieldState
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LoginScreen(
+	viewModel: LoginViewModel = koinViewModel(),
+	navController: NavController
+) {
+	val state = viewModel.viewState.collectAsState()
+	val scope = rememberCoroutineScope()
+	val snackbarHostState = remember { SnackbarHostState() }
+	Scaffold(
+		snackbarHost = {
+			SnackbarHost(hostState = snackbarHostState)
+		}
+	) {
+		if (state.value.isLoginError) {
+			SideEffect {
+				scope.launch {
+					snackbarHostState.showSnackbar("Login error occurred")
+				}
+			}
+		}
+		LoginScreenDisplay(
+			modifier = Modifier.padding(it),
+			state = state.value,
+			onEmailInput = {
+				viewModel.reduce(
+					LoginScreenEvent.OnEmailInput(it)
+				)
+			},
+			onPasswordInput = {
+				viewModel.reduce(
+					LoginScreenEvent.OnPasswordInput(it)
+				)
+			},
+			onLoginClick = {
+				viewModel.reduce(LoginScreenEvent.OnLoginClick {
+					navController.navigate(Screen.homeScreen.route)
+				})
+			},
+			onRegisterClick = {
+				navController.navigate(Screen.Register.route)
+			},
+			onPasswordVisibilityClick = {
+				viewModel.reduce(LoginScreenEvent.OnPasswordVisibilityClick)
+			}
+		)
+	}
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreenDisplay(
+	modifier: Modifier = Modifier,
 	state: LoginScreenState,
 	onEmailInput: (String) -> Unit,
 	onPasswordInput: (String) -> Unit,
@@ -45,15 +108,19 @@ fun LoginScreenDisplay(
 	onRegisterClick: () -> Unit,
 	onPasswordVisibilityClick: () -> Unit,
 ) {
+	if (state.isLoginInProgress) {
+		LinearProgressIndicator(
+			modifier = Modifier.fillMaxWidth()
+		)
+	}
 	Column(
-		modifier = Modifier
+		modifier = modifier
 			.fillMaxSize()
 			.padding(24.dp),
 		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.Center,
 	) {
 		val focusManager = LocalFocusManager.current
-
 		Text(
 			modifier = Modifier.fillMaxWidth(),
 			text = stringResource(R.string.text_sign_in),
@@ -116,13 +183,20 @@ fun LoginScreenDisplay(
 			modifier = Modifier.fillMaxWidth()
 		) {
 			Button(
-				onClick = onLoginClick
+				onClick = {
+					focusManager.clearFocus()
+					onLoginClick()
+				},
+				enabled = state.isValid()
 			) {
 				Text(text = stringResource(R.string.text_sign_in))
 			}
 
 			FilledTonalButton(
-				onClick = onRegisterClick
+				onClick = {
+					focusManager.clearFocus()
+					onRegisterClick()
+				}
 			) {
 				Text(text = stringResource(R.string.text_sign_up))
 			}
@@ -134,6 +208,7 @@ fun LoginScreenDisplay(
 @Composable
 fun LoginPreview() {
 	LoginScreenDisplay(
+		Modifier,
 		LoginScreenState(
 			"",
 			"",

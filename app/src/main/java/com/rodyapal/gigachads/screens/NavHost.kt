@@ -23,7 +23,7 @@ fun AppNavHost() {
 
 		}
 		composable(Screen.Login.route) {
-//			LoginScreen(navController = navController)
+			LoginScreen(navController = navController)
 		}
 		composable(Screen.Register.route) {
 
