@@ -14,4 +14,12 @@
     <string name="text_favorite_servers">Favorite servers</string>
     <string name="text_no_fav_servers">You have no favorite servers</string>
     <string name="text_posts">Posts</string>
+
+    <string name="screen_fav_servers">Favorite</string>
+    <string name="screen_posts">News</string>
+    <string name="screen_search">Search</string>
+    <string name="screen_login">Sign in</string>
+    <string name="screen_register">Sign up</string>
+    <string name="screen_server_details">Server details</string>
+    <string name="screen_servers_posts">Server news</string>
 </resources>
