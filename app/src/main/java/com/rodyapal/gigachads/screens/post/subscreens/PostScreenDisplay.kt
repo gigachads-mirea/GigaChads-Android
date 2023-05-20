@@ -1,4 +1,4 @@
-package com.rodyapal.gigachads.screens.posts.subscreens
+package com.rodyapal.gigachads.screens.post.subscreens
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
@@ -34,18 +34,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rodyapal.gigachads.R
-import com.rodyapal.gigachads.screens.posts.model.PostScreenState
+import com.rodyapal.gigachads.screens.post.model.PostScreenState
 import com.rodyapal.gigachads.utils.MOCK_POSTS
 import java.text.SimpleDateFormat
 
 @Composable
 fun PostScreenDisplay(
+	modifier: Modifier = Modifier,
 	state: PostScreenState.Display,
 	onLikeClick: () -> Unit,
 	onViewCommentsClick: () -> Unit,
 ) {
 	Column(
-		modifier = Modifier
+		modifier = modifier
 			.fillMaxSize()
 			.verticalScroll(rememberScrollState())
 	) {
