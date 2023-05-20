@@ -19,4 +19,7 @@ interface UserDao {
 	@Transaction
 	@Query("SELECT * FROM users WHERE userId = 0")
 	suspend fun getUserWithFavoriteServers(): UserWithFavoriteServers
+
+	@Query("SELECT serverId FROM favorite_servers WHERE userId = :userId")
+	suspend fun getFavoriteServerIds(userId: Int): List<Long>
 }

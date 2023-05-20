@@ -18,4 +18,11 @@ interface ServerDao {
 
 	@Insert
 	suspend fun save(server: Server)
+
+	@Query("SELECT * FROM servers WHERE serverId in (:ids)")
+	suspend fun get(ids: List<Long>): List<Server>
+
+	//TODO: check query works
+	@Query("SELECT * FROM servers INNER JOIN posts WHERE posts.id = :postId AND posts.serverId = servers.serverId")
+	suspend fun getParentForPost(postId: Long): Server
 }

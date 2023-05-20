@@ -9,13 +9,24 @@ import com.rodyapal.gigachads.model.dao.ServerDao
 import com.rodyapal.gigachads.model.dao.UserDao
 import com.rodyapal.gigachads.model.entity.Comment
 import com.rodyapal.gigachads.model.entity.Game
+import com.rodyapal.gigachads.model.entity.LikedComment
+import com.rodyapal.gigachads.model.entity.LikedPost
 import com.rodyapal.gigachads.model.entity.Post
 import com.rodyapal.gigachads.model.entity.Server
 import com.rodyapal.gigachads.model.entity.ServerUserCrossRef
 import com.rodyapal.gigachads.model.entity.User
 
 @Database(
-	entities = [Comment::class, Game::class, Post::class, Server::class, ServerUserCrossRef::class, User::class],
+	entities = [
+		Comment::class,
+		Game::class,
+		Post::class,
+		Server::class,
+		ServerUserCrossRef::class,
+		User::class,
+		LikedComment::class,
+		LikedPost::class
+	],
 	version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
