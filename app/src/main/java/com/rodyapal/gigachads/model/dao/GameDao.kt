@@ -12,4 +12,7 @@ interface GameDao {
 
 	@Insert
 	suspend fun save(game: Game)
+
+	@Query("SELECT * FROM games WHERE id = :id")
+	suspend fun getById(id: Long): Game
 }
