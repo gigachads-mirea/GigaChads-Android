@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -15,17 +16,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.rodyapal.gigachads.R
-import com.rodyapal.gigachads.screens.favservers.model.FavServersScreenState
+import com.rodyapal.gigachads.screens.favservers.model.FavoriteServersScreenState
 import com.rodyapal.gigachads.utils.MOCK_SERVER_BASIC_INFO
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FavoriteServersScreenDisplay(
-	state: FavServersScreenState.Display,
-	onServerClick: (Int) -> Unit
+	modifier: Modifier = Modifier,
+	state: FavoriteServersScreenState.Display,
+	onServerClick: (Long) -> Unit
 ) {
 	LazyColumn(
-		modifier = Modifier.fillMaxSize()
+		modifier = modifier.fillMaxSize()
 	) {
 		stickyHeader {
 			Text(
@@ -35,12 +37,12 @@ fun FavoriteServersScreenDisplay(
 
 			Divider()
 		}
-		itemsIndexed(state.servers) { index, it ->
+		items(state.servers) {
 			ServerItem(
 				modifier = Modifier
 					.fillMaxWidth()
 					.clickable {
-						onServerClick(index)
+						onServerClick(it.serverId)
 					},
 				serverName = it.serverName,
 				gameName = it.gameName
@@ -83,7 +85,7 @@ private fun ServerItemPreview() {
 @Composable
 fun FavServersScreenPreview() {
 	FavoriteServersScreenDisplay(
-		state = FavServersScreenState.Display(
+		state = FavoriteServersScreenState.Display(
 			servers = MOCK_SERVER_BASIC_INFO
 		),
 		onServerClick = {}

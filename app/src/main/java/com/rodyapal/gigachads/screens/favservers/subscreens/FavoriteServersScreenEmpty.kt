@@ -20,9 +20,11 @@ import androidx.compose.ui.unit.dp
 import com.rodyapal.gigachads.R
 
 @Composable
-fun FavoriteServersScreenEmpty() {
+fun FavoriteServersScreenEmpty(
+	modifier: Modifier = Modifier,
+) {
 	Column(
-		modifier = Modifier.fillMaxSize()
+		modifier = modifier.fillMaxSize()
 	) {
 		Text(
 			text = stringResource(R.string.text_favorite_servers),
