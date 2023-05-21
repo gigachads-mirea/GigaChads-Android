@@ -9,6 +9,8 @@ import com.rodyapal.gigachads.screens.login.model.LoginScreenState
 import com.rodyapal.gigachads.utils.EMAIL_REGEX_PATTERN
 import com.rodyapal.gigachads.utils.PASSWORD_REGEX_PATTERN
 import com.rodyapal.gigachads.utils.TextFieldState
+import com.rodyapal.gigachads.utils.isEmailValid
+import com.rodyapal.gigachads.utils.isPasswordValid
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -68,16 +70,6 @@ class LoginViewModel(
 			)
 		} else {
 			current
-		}
-	}
-
-	companion object {
-		fun isEmailValid(email: String): Boolean {
-			return Regex(EMAIL_REGEX_PATTERN).matches(email)
-		}
-
-		fun isPasswordValid(password: String): Boolean {
-			return Regex(PASSWORD_REGEX_PATTERN).matches(password)
 		}
 	}
 }
