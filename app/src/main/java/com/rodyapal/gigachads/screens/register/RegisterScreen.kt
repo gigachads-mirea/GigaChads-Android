@@ -14,7 +14,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +35,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rodyapal.gigachads.R
-import com.rodyapal.gigachads.screens.login.model.LoginScreenState
 import com.rodyapal.gigachads.screens.register.model.RegisterScreenEvent
 import com.rodyapal.gigachads.screens.register.model.RegisterScreenState
 import com.rodyapal.gigachads.utils.TextFieldState
@@ -47,7 +45,7 @@ fun RegisterScreenState(
 	onRegistered: () -> Unit,
 	onAbortRegistration: () -> Unit,
 	onError: () -> Unit,
-	viewModel: RegisterScreenViewModel = koinViewModel()
+	viewModel: RegisterViewModel = koinViewModel()
 ) {
 	val state = viewModel.viewState.collectAsState()
 	if (state.value.isError) {

@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class RegisterScreenViewModel(
+class RegisterViewModel(
 	private val userRepository: UserRepository
 ) : ViewModel(), Reducer<RegisterScreenEvent> {
 
