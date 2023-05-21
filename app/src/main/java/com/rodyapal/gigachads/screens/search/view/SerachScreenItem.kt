@@ -15,11 +15,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ServerSearchItem(
+	modifier: Modifier = Modifier,
 	title: String,
 	description: String
 ) {
 	Column(
-		modifier = Modifier
+		modifier = modifier
 			.fillMaxWidth()
 			.padding(16.dp),
 		horizontalAlignment = Alignment.Start

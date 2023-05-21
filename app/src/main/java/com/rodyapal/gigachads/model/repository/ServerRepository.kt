@@ -15,4 +15,11 @@ class ServerRepository(
 	suspend fun getParentServerForPost(postId: Long): Server {
 		return dao.getParentForPost(postId)
 	}
+
+	suspend fun getServerSearchHistory(): List<Server> = dao.getSearchedServers()
+
+	suspend fun getServerSearchSuggestions(query: String): List<Server> {
+		//TODO: implement
+		return dao.getSearchSuggestions("%$query%")
+	}
 }

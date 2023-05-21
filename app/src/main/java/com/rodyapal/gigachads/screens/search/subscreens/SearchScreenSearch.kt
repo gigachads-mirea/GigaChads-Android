@@ -5,7 +5,10 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.rodyapal.gigachads.screens.search.model.SearchScreenState
 import com.rodyapal.gigachads.screens.search.view.SearchView
 import com.rodyapal.gigachads.screens.search.view.ServerSearchItem
@@ -15,7 +18,8 @@ fun SearchScreenSearch(
 	state: SearchScreenState.Search,
 	onQueryChange: (String) -> Unit,
 	onBackPressed: () -> Unit,
-	onClearInput: () -> Unit
+	onClearInput: () -> Unit,
+	onServerClicked: (Long) -> Unit,
 ) {
 	AnimatedVisibility(
 		visible = true,
@@ -28,10 +32,13 @@ fun SearchScreenSearch(
 			onNavigateBack = onBackPressed,
 			onClearInput = onClearInput,
 		) {
-			items(state.suggestions.size) {
+			items(state.suggestions) {
 				ServerSearchItem(
-					title = state.suggestions[it].serverName,
-					description = state.suggestions[it].gameName
+					modifier = Modifier.clickable {
+						onServerClicked(it.serverId)
+					},
+					title = it.serverName,
+					description = it.gameName
 				)
 			}
 		}
