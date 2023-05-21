@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
@@ -20,6 +22,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -34,14 +37,77 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rodyapal.gigachads.R
 import com.rodyapal.gigachads.screens.login.model.LoginScreenState
+import com.rodyapal.gigachads.screens.register.model.RegisterScreenEvent
 import com.rodyapal.gigachads.screens.register.model.RegisterScreenState
 import com.rodyapal.gigachads.utils.TextFieldState
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun RegisterScreenState(
+	onRegistered: () -> Unit,
+	onAbortRegistration: () -> Unit,
+	onError: () -> Unit,
+	viewModel: RegisterScreenViewModel = koinViewModel()
+) {
+	val state = viewModel.viewState.collectAsState()
+	if (state.value.isError) {
+		onError()
+	}
+	if (state.value.showSuccessMessage) {
+		onRegistered()
+	}
+	RegisterScreenDisplay(
+		state = state.value,
+		onEmailInput = {
+			viewModel.reduce(
+				RegisterScreenEvent.OnEmailInput(it)
+			)
+		},
+		onUsernameInput = {
+			viewModel.reduce(
+				RegisterScreenEvent.OnUsernameInput(it)
+			)
+		},
+		onPasswordInput = {
+			viewModel.reduce(
+				RegisterScreenEvent.OnPasswordInput(it)
+			)
+		},
+		onConfirmInput = {
+			viewModel.reduce(
+				RegisterScreenEvent.OnConfirmInput(it)
+			)
+		},
+		onRegisterClick = {
+			viewModel.reduce(
+				RegisterScreenEvent.OnAbortClick
+			)
+		},
+		onAbortClick = {
+			viewModel.reduce(
+				RegisterScreenEvent.OnAbortClick
+			)
+			onAbortRegistration()
+		},
+		onPasswordVisibilityClick = {
+			viewModel.reduce(
+				RegisterScreenEvent.OnPasswordVisibilityClick
+			)
+		},
+		onConfirmVisibilityClick = {
+			viewModel.reduce(
+				RegisterScreenEvent.OnConfirmVisibilityClick
+			)
+		}
+	)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreenDisplay(
 	state: RegisterScreenState,
 	onEmailInput: (String) -> Unit,
+	onUsernameInput: (String) -> Unit,
 	onPasswordInput: (String) -> Unit,
 	onConfirmInput: (String) -> Unit,
 	onRegisterClick: () -> Unit,
@@ -52,7 +118,8 @@ fun RegisterScreenDisplay(
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
-			.padding(24.dp),
+			.padding(24.dp)
+			.verticalScroll(rememberScrollState()),
 		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.Center,
 	) {
@@ -79,6 +146,23 @@ fun RegisterScreenDisplay(
 			keyboardOptions = KeyboardOptions(
 				imeAction = ImeAction.Next,
 				keyboardType = KeyboardType.Email
+			)
+		)
+
+		Spacer(modifier = Modifier.height(12.dp))
+
+		OutlinedTextField(
+			modifier = Modifier.fillMaxWidth(),
+			value = state.username,
+			onValueChange = onUsernameInput,
+			label = { Text(text = stringResource(R.string.text_username)) },
+			isError = !state.usernameState.isValidOrUntouched(),
+			keyboardActions = KeyboardActions(
+				onNext = { focusManager.moveFocus(FocusDirection.Down) }
+			),
+			keyboardOptions = KeyboardOptions(
+				imeAction = ImeAction.Next,
+				keyboardType = KeyboardType.Text
 			)
 		)
 
@@ -169,10 +253,10 @@ fun RegisterScreenDisplay(
 fun RegisterPreview() {
 	RegisterScreenDisplay(
 		RegisterScreenState(
-			"", "", "",
-			TextFieldState.UNTOUCHED, TextFieldState.UNTOUCHED, TextFieldState.UNTOUCHED,
+			"", "", "", "",
+			TextFieldState.UNTOUCHED, TextFieldState.UNTOUCHED, TextFieldState.UNTOUCHED, TextFieldState.UNTOUCHED,
 			true, isConfirmVisible = true
 		),
-		{}, {}, {}, {}, {}, {}, {}
+		{}, {}, {}, {}, {}, {}, {}, {}
 	)
 }

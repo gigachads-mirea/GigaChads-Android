@@ -14,6 +14,8 @@ package com.rodyapal.gigachads.utils
  * */
 const val EMAIL_REGEX_PATTERN = "(?=.{1,256})(?=.{1,64}@)[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}(?<=.{2,6})"
 
+fun isEmailValid(email: String) = Regex(EMAIL_REGEX_PATTERN).matches(email)
+
 /**
  * 	This regular expression matches a password that:
 	-	Contains at least one lowercase letter
@@ -23,3 +25,5 @@ const val EMAIL_REGEX_PATTERN = "(?=.{1,256})(?=.{1,64}@)[^\\s@]+@[^\\s@]+\\.[^\
 	-	Has a minimum length of 8 characters
  * */
 const val PASSWORD_REGEX_PATTERN = "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}"
+
+fun isPasswordValid(password: String) = Regex(PASSWORD_REGEX_PATTERN).matches(password)
