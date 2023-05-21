@@ -71,11 +71,13 @@ class LoginViewModel(
 		}
 	}
 
-	private fun isEmailValid(email: String): Boolean {
-		return Regex(EMAIL_REGEX_PATTERN).matches(email)
-	}
+	companion object {
+		fun isEmailValid(email: String): Boolean {
+			return Regex(EMAIL_REGEX_PATTERN).matches(email)
+		}
 
-	private fun isPasswordValid(password: String): Boolean {
-		return Regex(PASSWORD_REGEX_PATTERN).matches(password)
+		fun isPasswordValid(password: String): Boolean {
+			return Regex(PASSWORD_REGEX_PATTERN).matches(password)
+		}
 	}
 }

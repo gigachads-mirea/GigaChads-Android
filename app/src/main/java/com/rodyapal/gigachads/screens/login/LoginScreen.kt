@@ -25,12 +25,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -44,6 +48,7 @@ import com.rodyapal.gigachads.R
 import com.rodyapal.gigachads.screens.Screen
 import com.rodyapal.gigachads.screens.login.model.LoginScreenEvent
 import com.rodyapal.gigachads.screens.login.model.LoginScreenState
+import com.rodyapal.gigachads.ui.theme.GigachadsTheme
 import com.rodyapal.gigachads.utils.TextFieldState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -110,7 +115,7 @@ fun LoginScreenDisplay(
 ) {
 	if (state.isLoginInProgress) {
 		LinearProgressIndicator(
-			modifier = Modifier.fillMaxWidth()
+			modifier = Modifier.fillMaxWidth().testTag("progressIndicator")
 		)
 	}
 	Column(
@@ -207,15 +212,37 @@ fun LoginScreenDisplay(
 @Preview
 @Composable
 fun LoginPreview() {
+	var state by remember {
+		mutableStateOf(LoginScreenState.blank())
+	}
 	LoginScreenDisplay(
-		Modifier,
-		LoginScreenState(
-			"",
-			"",
-			TextFieldState.UNTOUCHED,
-			TextFieldState.UNTOUCHED,
-			true
-		),
-		{}, {}, {}, {}, {}
+		state = state,
+		onEmailInput = { state = state.copy(
+			email = it,
+			emailState = if (it.isNotBlank()) {
+				if (LoginViewModel.isEmailValid(it)) {
+					TextFieldState.VALID
+				} else {
+					TextFieldState.INVALID
+				}
+			} else {
+				TextFieldState.UNTOUCHED
+			}
+		) },
+		onPasswordInput = { state = state.copy(
+			password = it,
+			passwordState = if (it.isNotBlank()) {
+				if (LoginViewModel.isPasswordValid(it)) {
+					TextFieldState.VALID
+				} else {
+					TextFieldState.INVALID
+				}
+			} else {
+				TextFieldState.UNTOUCHED
+			}
+		) },
+		onLoginClick = {  },
+		onRegisterClick = {  },
+		onPasswordVisibilityClick = { state = state.copy(isPasswordVisible = !state.isPasswordVisible) },
 	)
 }
