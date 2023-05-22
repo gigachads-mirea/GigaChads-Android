@@ -4,6 +4,8 @@ import com.rodyapal.gigachads.model.entity.Post
 import com.rodyapal.gigachads.model.entity.Server
 
 sealed class ServerScreenState {
+
+	object Loading : ServerScreenState()
 	data class Info(
 		val server: Server,
 		val latestPost: Post,

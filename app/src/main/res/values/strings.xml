@@ -25,4 +25,10 @@
     <string name="description_back_to_post">Return to post</string>
     <string name="text_username">Username</string>
     <string name="text_search_for_servers">Search for servers</string>
+    <string name="description_back_to_server_info">Back to server info</string>
+    <string name="description_add_server_to_favorite">Add server to favorite</string>
+    <string name="text_to_favorite">To favorite</string>
+    <string name="text_description">Description</string>
+    <string name="text_latest_news">Latest news</string>
+    <string name="description_see_other_posts">See other posts</string>
 </resources>

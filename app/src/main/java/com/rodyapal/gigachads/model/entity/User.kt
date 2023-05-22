@@ -14,7 +14,7 @@ data class User(
 	val email: String,
 	val password: String,
 	val isClient: Boolean,
-	val userId: Int,
+	val userId: Long,
 	@PrimaryKey
 	val _localId: Int = 0
 )

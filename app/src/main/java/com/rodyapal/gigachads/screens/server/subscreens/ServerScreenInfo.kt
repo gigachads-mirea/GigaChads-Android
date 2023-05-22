@@ -21,8 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rodyapal.gigachads.R
 import com.rodyapal.gigachads.screens.server.model.ServerScreenState
 import com.rodyapal.gigachads.ui.composable.PostCard
 import com.rodyapal.gigachads.screens.server.view.ServerScreenHeader
@@ -32,7 +34,7 @@ import com.rodyapal.gigachads.utils.MOCK_SERVER_SCREEN_STATE_INFO
 fun ServerScreenInfo(
 	state: ServerScreenState.Info,
 	onAddToFavoriteClick: () -> Unit,
-	onReadPostClicked: (Int) -> Unit,
+	onReadPostClick: (Long) -> Unit,
 	onSeeOtherPostsClick: () -> Unit
 ) {
 	Column(
@@ -43,7 +45,7 @@ fun ServerScreenInfo(
 	) {
 		HeaderDescriptionPosts(
 			state = state,
-			onReadPostClicked = onReadPostClicked,
+			onReadPostClicked = onReadPostClick,
 			onSeeOtherPostsClick = onSeeOtherPostsClick
 		)
 
@@ -53,9 +55,9 @@ fun ServerScreenInfo(
 		) {
 			Icon(
 				imageVector = Icons.Default.Add,
-				contentDescription = "Add server to favorite"
+				contentDescription = stringResource(R.string.description_add_server_to_favorite)
 			)
-			Text(text = "To favorite")
+			Text(text = stringResource(R.string.text_to_favorite))
 		}
 	}
 }
@@ -64,7 +66,7 @@ fun ServerScreenInfo(
 private fun HeaderDescriptionPosts(
 	modifier: Modifier = Modifier,
 	state: ServerScreenState.Info,
-	onReadPostClicked: (Int) -> Unit,
+	onReadPostClicked: (Long) -> Unit,
 	onSeeOtherPostsClick: () -> Unit
 ) {
 	Column(
@@ -80,7 +82,7 @@ private fun HeaderDescriptionPosts(
 				.padding(12.dp)
 		) {
 			Text(
-				text = "Description",
+				text = stringResource(R.string.text_description),
 				style = MaterialTheme.typography.titleLarge
 			)
 
@@ -98,7 +100,7 @@ private fun HeaderDescriptionPosts(
 				contentPadding = PaddingValues(horizontal = 0.dp)
 			) {
 				Text(
-					text = "Latest news",
+					text = stringResource(R.string.text_latest_news),
 					style = MaterialTheme.typography.titleLarge
 				)
 
@@ -106,7 +108,7 @@ private fun HeaderDescriptionPosts(
 
 				Icon(
 					imageVector = Icons.Default.KeyboardArrowRight,
-					contentDescription = "See other posts"
+					contentDescription = stringResource(R.string.description_see_other_posts)
 				)
 			}
 
@@ -117,7 +119,7 @@ private fun HeaderDescriptionPosts(
 				post = state.latestPost,
 				serverName = state.server.name,
 				onReadClick = {
-					onReadPostClicked(0)
+					onReadPostClicked(state.latestPost.id)
 				}
 			)
 		}
@@ -130,7 +132,7 @@ fun ServerScreenInfoPreview() {
 	ServerScreenInfo(
 		state = MOCK_SERVER_SCREEN_STATE_INFO,
 		onAddToFavoriteClick = {},
-		onReadPostClicked = {},
+		onReadPostClick = {},
 		onSeeOtherPostsClick = {}
 	)
 }
