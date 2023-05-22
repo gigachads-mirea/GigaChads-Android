@@ -2,6 +2,7 @@ package com.rodyapal.gigachads.screens.serverposts
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +12,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,16 +28,46 @@ import androidx.compose.ui.unit.dp
 import com.rodyapal.gigachads.R
 import com.rodyapal.gigachads.model.entity.ServerWithPosts
 import com.rodyapal.gigachads.screens.serverposts.model.PostsForServer
+import com.rodyapal.gigachads.screens.serverposts.model.ServerPostsScreenEvent
 import com.rodyapal.gigachads.screens.serverposts.model.ServerPostsScreenState
 import com.rodyapal.gigachads.ui.composable.PostCard
 import com.rodyapal.gigachads.utils.MOCK_POSTS
 import com.rodyapal.gigachads.utils.MOCK_SERVER
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun ServerPostsScreen(
+	onViewPost: (Long) -> Unit,
+	viewModel: ServerPostsViewModel = koinViewModel(),
+) {
+	val viewState = viewModel.viewState.collectAsState()
+	LaunchedEffect(key1 = Unit) {
+		viewModel.reduce(
+			ServerPostsScreenEvent.EnterScreen
+		)
+	}
+	when (val state = viewState.value) {
+		is ServerPostsScreenState.Display -> ServerPostsScreenDisplay(
+			state = state,
+			onReadPostClick = { postId ->
+				onViewPost(postId)
+			}
+		)
+		ServerPostsScreenState.Loading -> Box(
+			modifier = Modifier.fillMaxSize()
+		) {
+			CircularProgressIndicator(
+				modifier = Modifier.align(Alignment.Center)
+			)
+		}
+	}
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ServerPostsScreenDisplay(
-	state: ServerPostsScreenState,
-	onReadPostClick: (serverIndex: Int, postIndex: Int) -> Unit
+	state: ServerPostsScreenState.Display,
+	onReadPostClick: (Long) -> Unit
 ) {
 	LazyColumn(
 		modifier = Modifier.fillMaxSize()
@@ -50,7 +85,7 @@ fun ServerPostsScreenDisplay(
 				Divider()
 			}
 		}
-		itemsIndexed(state.serversWithPosts) { serverIndex, (serverName, posts) ->
+		items(state.serversWithPosts) { (serverName, posts) ->
 			Column(
 				modifier = Modifier
 					.fillMaxWidth()
@@ -66,13 +101,13 @@ fun ServerPostsScreenDisplay(
 				)
 
 				LazyRow {
-					itemsIndexed(posts) { postIndex, it ->
+					items(posts) {
 						PostCard(
 							modifier = Modifier.fillParentMaxWidth(),
 							post = it,
 							serverName = "",
 							onReadClick = {
-								onReadPostClick(serverIndex, postIndex)
+								onReadPostClick(it.id)
 							}
 						)
 						Spacer(modifier = Modifier.width(8.dp))
@@ -87,7 +122,7 @@ fun ServerPostsScreenDisplay(
 @Composable
 private fun ServerPostsScreenDisplayPreview() {
 	ServerPostsScreenDisplay(
-		state = ServerPostsScreenState(
+		state = ServerPostsScreenState.Display(
 			serversWithPosts = listOf(
 				ServerWithPosts(
 					MOCK_SERVER, MOCK_POSTS
@@ -103,6 +138,6 @@ private fun ServerPostsScreenDisplayPreview() {
 				),
 			).map { PostsForServer.from(it) }
 		),
-		onReadPostClick = {_, _ -> }
+		onReadPostClick = {}
 	)
 }
