@@ -8,4 +8,7 @@ sealed class SearchScreenEvent {
 	) : SearchScreenEvent()
 	object OnAbortSearch : SearchScreenEvent()
 	object OnClearInput : SearchScreenEvent()
+	data class OnServerSelected(
+		val serverId: Long
+	) : SearchScreenEvent()
 }

@@ -1,6 +1,7 @@
 package com.rodyapal.gigachads.model.repository
 
 import com.rodyapal.gigachads.model.dao.ServerDao
+import com.rodyapal.gigachads.model.entity.SearchedServer
 import com.rodyapal.gigachads.model.entity.Server
 import com.rodyapal.gigachads.model.entity.ServerUserCrossRef
 import com.rodyapal.gigachads.model.entity.ServerWithPosts
@@ -51,5 +52,13 @@ class ServerRepository(
 				userId, serverId
 			)
 		)
+	}
+
+	suspend fun setWasSearched(serverId: Long) {
+		val searched = getServerSearchHistory()
+		if (searched.size == 10) {
+			dao.removeFromSearchHistory(SearchedServer(searched.last().serverId))
+		}
+		dao.setWasSearched(SearchedServer(serverId))
 	}
 }

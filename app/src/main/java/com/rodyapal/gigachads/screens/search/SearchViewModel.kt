@@ -73,6 +73,9 @@ class SearchViewModel(
 			is SearchScreenEvent.OnClearInput -> _viewState.update {
 				state.copy(query = "")
 			}
+			is SearchScreenEvent.OnServerSelected -> viewModelScope.launch {
+				serverRepository.setWasSearched(event.serverId)
+			}
 			else -> throw Exception("Invalid state ($state) for event ($event)")
 		}
 	}

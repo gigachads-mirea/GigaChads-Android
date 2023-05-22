@@ -57,7 +57,7 @@ fun SearchScreen(
 				},
 				onServerClicked = {
 					viewModel.reduce(
-						SearchScreenEvent.EnterScreen
+						SearchScreenEvent.OnServerSelected(it)
 					)
 					onNavigateToServer(it)
 				},
