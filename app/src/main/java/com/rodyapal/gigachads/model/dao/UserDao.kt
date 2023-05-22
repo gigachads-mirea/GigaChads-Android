@@ -21,5 +21,5 @@ interface UserDao {
 	suspend fun getUserWithFavoriteServers(): UserWithFavoriteServers
 
 	@Query("SELECT serverId FROM favorite_servers WHERE userId = :userId")
-	suspend fun getFavoriteServerIds(userId: Int): List<Long>
+	suspend fun getFavoriteServerIds(userId: Long): List<Long>
 }

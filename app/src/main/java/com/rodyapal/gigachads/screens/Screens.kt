@@ -2,7 +2,6 @@ package com.rodyapal.gigachads.screens
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.lifecycle.ViewModel
 import com.rodyapal.gigachads.R
 
 interface BottomNavScreen {
@@ -16,7 +15,7 @@ sealed class Screen(
 	object FavServers : Screen("fav_servers", R.string.screen_fav_servers), BottomNavScreen {
 		@DrawableRes override val iconId: Int = R.drawable.bottom_nav_fav_servers_icon
 	}
-	object Posts : Screen("posts", R.string.screen_posts), BottomNavScreen {
+	object Post : Screen("post", R.string.screen_posts), BottomNavScreen {
 		@DrawableRes override val iconId: Int = R.drawable.bottom_nav_posts_icon
 	}
 	object Search : Screen("search", R.string.screen_search), BottomNavScreen {
@@ -29,13 +28,13 @@ sealed class Screen(
 
 	companion object {
 		val allUser = listOf(
-			FavServers, Login, Posts, Register, Search, ServerDetails, ServerPosts
+			FavServers, Login, Post, Register, Search, ServerDetails, ServerPosts
 		)
 
 		val allClient = listOf<Screen>(/*TODO*/)
 
 		val bottomNavScreens = listOf(
-			Search, FavServers, Posts
+			Search, FavServers, Post
 		)
 
 		val startDestination = Login

@@ -10,7 +10,7 @@ import com.rodyapal.gigachads.screens.favservers.subscreens.FavoriteServersScree
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun FavoriteServers(
+fun FavoriteServersScreen(
 	onNavigateToServerScreen: (Long) -> Unit,
 	viewModel: FavoriteServersViewModel = koinViewModel()
 ) {

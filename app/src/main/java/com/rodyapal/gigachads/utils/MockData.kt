@@ -10,7 +10,8 @@ import com.rodyapal.gigachads.screens.server.model.ServerScreenState
 val MOCK_SERVER_BASIC_INFO = List(20) { index ->
 	ServerBasicInfo(
 		gameName = "Game name",
-		serverName = "Server ${index + 1}"
+		serverName = "Server ${index + 1}",
+		serverId = index.toLong()
 	)
 }
 

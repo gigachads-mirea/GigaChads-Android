@@ -50,14 +50,17 @@ import com.rodyapal.gigachads.screens.login.model.LoginScreenEvent
 import com.rodyapal.gigachads.screens.login.model.LoginScreenState
 import com.rodyapal.gigachads.ui.theme.GigachadsTheme
 import com.rodyapal.gigachads.utils.TextFieldState
+import com.rodyapal.gigachads.utils.isEmailValid
+import com.rodyapal.gigachads.utils.isPasswordValid
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
+	onSuccessfulLogin: () -> Unit,
+	onMoveToRegister: () -> Unit,
 	viewModel: LoginViewModel = koinViewModel(),
-	navController: NavController
 ) {
 	val state = viewModel.viewState.collectAsState()
 	val scope = rememberCoroutineScope()
@@ -89,11 +92,11 @@ fun LoginScreen(
 			},
 			onLoginClick = {
 				viewModel.reduce(LoginScreenEvent.OnLoginClick {
-					navController.navigate(Screen.homeScreen.route)
+					onSuccessfulLogin()
 				})
 			},
 			onRegisterClick = {
-				navController.navigate(Screen.Register.route)
+				onMoveToRegister()
 			},
 			onPasswordVisibilityClick = {
 				viewModel.reduce(LoginScreenEvent.OnPasswordVisibilityClick)
@@ -220,7 +223,7 @@ fun LoginPreview() {
 		onEmailInput = { state = state.copy(
 			email = it,
 			emailState = if (it.isNotBlank()) {
-				if (LoginViewModel.isEmailValid(it)) {
+				if (isEmailValid(it)) {
 					TextFieldState.VALID
 				} else {
 					TextFieldState.INVALID
@@ -232,7 +235,7 @@ fun LoginPreview() {
 		onPasswordInput = { state = state.copy(
 			password = it,
 			passwordState = if (it.isNotBlank()) {
-				if (LoginViewModel.isPasswordValid(it)) {
+				if (isPasswordValid(it)) {
 					TextFieldState.VALID
 				} else {
 					TextFieldState.INVALID

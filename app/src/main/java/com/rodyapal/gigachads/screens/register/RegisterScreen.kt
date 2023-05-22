@@ -41,7 +41,7 @@ import com.rodyapal.gigachads.utils.TextFieldState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun RegisterScreenState(
+fun RegisterScreen(
 	onRegistered: () -> Unit,
 	onAbortRegistration: () -> Unit,
 	onError: () -> Unit,
