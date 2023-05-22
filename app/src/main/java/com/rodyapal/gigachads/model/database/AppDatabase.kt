@@ -12,6 +12,7 @@ import com.rodyapal.gigachads.model.entity.Game
 import com.rodyapal.gigachads.model.entity.LikedComment
 import com.rodyapal.gigachads.model.entity.LikedPost
 import com.rodyapal.gigachads.model.entity.Post
+import com.rodyapal.gigachads.model.entity.SearchedServer
 import com.rodyapal.gigachads.model.entity.Server
 import com.rodyapal.gigachads.model.entity.ServerUserCrossRef
 import com.rodyapal.gigachads.model.entity.User
@@ -25,7 +26,8 @@ import com.rodyapal.gigachads.model.entity.User
 		ServerUserCrossRef::class,
 		User::class,
 		LikedComment::class,
-		LikedPost::class
+		LikedPost::class,
+		SearchedServer::class
 	],
 	version = 1
 )

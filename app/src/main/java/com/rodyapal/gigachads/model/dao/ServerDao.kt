@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.rodyapal.gigachads.model.entity.SearchedServer
 import com.rodyapal.gigachads.model.entity.Server
+import com.rodyapal.gigachads.model.entity.ServerUserCrossRef
 import com.rodyapal.gigachads.model.entity.ServerWithPosts
 
 @Dao
@@ -40,4 +41,13 @@ interface ServerDao {
 
 	@Delete
 	suspend fun removeFromSearchHistory(server: SearchedServer)
+
+	@Query("SELECT EXISTS(SELECT 1 FROM favorite_servers WHERE serverId = :serverId AND userId = :userId)")
+	suspend fun isFavorite(serverId: Long, userId: Long): Boolean
+
+	@Insert
+	suspend fun setFavorite(ref: ServerUserCrossRef)
+
+	@Delete
+	suspend fun removeFavorite(ref: ServerUserCrossRef)
 }
