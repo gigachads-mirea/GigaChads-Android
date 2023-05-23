@@ -31,4 +31,10 @@
     <string name="text_description">Description</string>
     <string name="text_latest_news">Latest news</string>
     <string name="description_see_other_posts">See other posts</string>
+    <string name="text_login_error_message">Login error occurred. Try again later.</string>
+    <string name="description_favorite_servers_screen">Favorite servers screen</string>
+    <string name="description_search_screen">Search screen</string>
+    <string name="description_server_posts_screen">News from favorite servers</string>
+    <string name="text_no_news">No news here</string>
+    <string name="text_no_search_history">You haven\'t searched anything yet</string>
 </resources>
