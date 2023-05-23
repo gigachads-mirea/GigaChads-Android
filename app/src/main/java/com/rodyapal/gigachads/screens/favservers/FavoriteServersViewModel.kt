@@ -11,6 +11,7 @@ import com.rodyapal.gigachads.screens.favservers.model.FavoriteServersScreenStat
 import com.rodyapal.gigachads.screens.favservers.model.ServerBasicInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,20 +26,21 @@ class FavoriteServersViewModel(
 
 	override fun reduce(event: FavoriteServersScreenEvent) {
 		viewModelScope.launch {
-			val data = userRepository.getFavoriteServers().let {
-				serverRepository.getServers(it)
-			}.map {
-				ServerBasicInfo(
-					serverId = it.serverId,
-					serverName = it.name,
-					gameName = gameRepository.getById(it.gameId).name
-				)
-			}
-			if (data.isNotEmpty()) {
-				_viewState.update {
-					FavoriteServersScreenState.Display(
-						servers = data
-					)
+			userRepository.getFavoriteServerIds().collect { ids ->
+				serverRepository.getServers(ids).map { servers ->
+					servers.map {
+						ServerBasicInfo(
+							serverId = it.serverId,
+							serverName = it.name,
+							gameName = gameRepository.getById(it.gameId).name
+						)
+					}
+				}.collect { servers ->
+					_viewState.update {
+						FavoriteServersScreenState.Display(
+							servers = servers
+						)
+					}
 				}
 			}
 		}

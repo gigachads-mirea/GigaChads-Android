@@ -1,64 +1,82 @@
 package com.rodyapal.gigachads.model.repository
 
-import com.rodyapal.gigachads.model.dao.ServerDao
-import com.rodyapal.gigachads.model.entity.SearchedServer
 import com.rodyapal.gigachads.model.entity.Server
-import com.rodyapal.gigachads.model.entity.ServerUserCrossRef
-import com.rodyapal.gigachads.model.entity.ServerWithPosts
+import com.rodyapal.gigachads.model.local.dao.ServerDao
+import com.rodyapal.gigachads.model.local.entity.SearchedServerEntity
+import com.rodyapal.gigachads.model.local.entity.FavoriteServerEntity
 import com.rodyapal.gigachads.model.network.api.ServerApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEmpty
 
 class ServerRepository(
 	private val dao: ServerDao,
 	private val api: ServerApi
 ) {
-	suspend fun getServers(ids: List<Long>): List<Server> {
-		return dao.get(ids)
+	suspend fun getServer(id: Long): Flow<Server> = getServers(listOf(id)).map { it.first() }
+	suspend fun getServers(ids: List<Long>): Flow<List<Server>> {
+		return dao.get(ids).onEmpty {
+			refreshServers(ids)
+		}.map { servers ->
+			servers.map { it.toDomainModel() }
+		}
 	}
 
-	suspend fun getById(id: Long): ServerWithPosts {
-		//TODO: implement
-		return dao.getById(id)
+	private suspend fun refreshServers(ids: List<Long>) {
+		api.getServers(ids).let { servers ->
+			dao.save(servers.map { it.toDomainModel().toServerEntity() })
+		}
 	}
 
-	suspend fun getParentServerForPost(postId: Long): Server {
-		return dao.getParentForPost(postId)
+	suspend fun getById(id: Long): Flow<Server> {
+		return dao.getById(id).onEmpty {
+			refreshServer(id)
+		}.map { serverWithPosts ->
+			serverWithPosts.toDomainModel()
+		}
 	}
 
-	suspend fun getServerSearchHistory(): List<Server> = dao.getSearchedServers()
+	private suspend fun refreshServer(serverId: Long) = refreshServers(listOf(serverId))
 
-	suspend fun getServerSearchSuggestions(query: String): List<Server> {
-		//TODO: implement
-		return dao.getSearchSuggestions("%$query%")
+	suspend fun getServerSearchHistory(): List<Server> =
+		dao.getSearchedServers().map { it.toDomainModel() }
+
+	suspend fun getServerSearchSuggestions(query: String): List<Server> =
+		dao.getSearchSuggestions("%$query%").map {
+			it.toDomainModel()
+		}
+
+	suspend fun searchServer(query: String): List<Server> {
+		return api.searchServer(query).map {
+			it.toDomainModel()
+		}.also { servers ->
+			dao.save(servers.map { it.toServerEntity() })
+		}
 	}
 
 	suspend fun isFavorite(serverId: Long, userId: Long): Boolean {
-		//TODO: implement
 		return dao.isFavorite(serverId, userId)
 	}
 
 	suspend fun setFavorite(serverId: Long, userId: Long) {
-		//TODO: implement
 		dao.setFavorite(
-			ServerUserCrossRef(
-				userId, serverId
-			)
+			FavoriteServerEntity(userId, serverId)
 		)
+		api.addToFavorite(serverId, userId)
 	}
 
 	suspend fun removeFavorite(serverId: Long, userId: Long) {
-		//TODO: implement
 		dao.removeFavorite(
-			ServerUserCrossRef(
-				userId, serverId
-			)
+			FavoriteServerEntity(userId, serverId)
 		)
+		api.removeFromFavorite(serverId, userId)
 	}
 
 	suspend fun setWasSearched(serverId: Long) {
 		val searched = getServerSearchHistory()
 		if (searched.size == 10) {
-			dao.removeFromSearchHistory(SearchedServer(searched.last().serverId))
+			dao.removeFromSearchHistory(SearchedServerEntity(searched.last().serverId))
 		}
-		dao.setWasSearched(SearchedServer(serverId))
+		dao.setWasSearched(SearchedServerEntity(serverId))
 	}
 }

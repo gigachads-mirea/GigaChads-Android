@@ -1,7 +1,6 @@
 package com.rodyapal.gigachads.screens.serverposts
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +12,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -63,54 +66,74 @@ fun ServerPostsScreen(
 	}
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ServerPostsScreenDisplay(
+	modifier: Modifier = Modifier,
 	state: ServerPostsScreenState.Display,
 	onReadPostClick: (Long) -> Unit
 ) {
-	LazyColumn(
-		modifier = Modifier.fillMaxSize()
+	Column(
+		modifier = modifier.fillMaxSize()
 	) {
-		stickyHeader {
+		Text(
+			text = stringResource(R.string.text_posts),
+			style = MaterialTheme.typography.headlineMedium,
+			modifier = Modifier.padding(12.dp)
+		)
+
+		Divider()
+
+		if (state.serversWithPosts.isEmpty()) {
 			Column(
-				modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+				modifier = Modifier.fillMaxSize(),
+				horizontalAlignment = Alignment.CenterHorizontally,
+				verticalArrangement = Arrangement.Center
 			) {
-				Text(
-					text = stringResource(R.string.text_posts),
-					style = MaterialTheme.typography.headlineMedium,
-					modifier = Modifier.padding(12.dp)
+				Icon(
+					imageVector = Icons.Default.Info,
+					contentDescription = stringResource(R.string.text_no_news),
+					tint = LocalContentColor.current.copy(alpha = 0.75f)
 				)
 
-				Divider()
+				Spacer(modifier = Modifier.height(4.dp))
+
+				Text(
+					text = stringResource(R.string.text_no_news),
+					style = MaterialTheme.typography.bodyMedium,
+				)
 			}
-		}
-		items(state.serversWithPosts) { (serverName, posts) ->
-			Column(
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(12.dp)
+		} else {
+			LazyColumn(
+				modifier = Modifier.fillMaxSize()
 			) {
-				Text(
-					text = serverName,
-					style = MaterialTheme.typography.bodyLarge,
-				)
-
-				Spacer(modifier = Modifier
-					.height(4.dp)
-				)
-
-				LazyRow {
-					items(posts) {
-						PostCard(
-							modifier = Modifier.fillParentMaxWidth(),
-							post = it,
-							serverName = "",
-							onReadClick = {
-								onReadPostClick(it.id)
-							}
+				items(state.serversWithPosts) { (serverName, posts) ->
+					Column(
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(12.dp)
+					) {
+						Text(
+							text = serverName,
+							style = MaterialTheme.typography.bodyLarge,
 						)
-						Spacer(modifier = Modifier.width(8.dp))
+
+						Spacer(modifier = Modifier
+							.height(4.dp)
+						)
+
+						LazyRow {
+							items(posts) {
+								PostCard(
+									modifier = Modifier.fillParentMaxWidth(),
+									post = it,
+									serverName = "",
+									onReadClick = {
+										onReadPostClick(it.id)
+									}
+								)
+								Spacer(modifier = Modifier.width(8.dp))
+							}
+						}
 					}
 				}
 			}

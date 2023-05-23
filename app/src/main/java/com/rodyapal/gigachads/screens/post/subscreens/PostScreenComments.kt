@@ -1,6 +1,5 @@
 package com.rodyapal.gigachads.screens.post.subscreens
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,25 +8,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,7 +45,6 @@ import java.text.SimpleDateFormat
 fun PostScreenComments(
 	modifier: Modifier = Modifier,
 	state: PostScreenState.Comments,
-	onCommentLike: (Long) -> Unit,
 	onUserCommentInput: (String) -> Unit,
 	onUserCommentDone: () -> Unit,
 	onBackPressed: () -> Unit
@@ -79,14 +71,10 @@ fun PostScreenComments(
 		LazyColumn(
 			modifier = Modifier.fillMaxWidth()
 		) {
-			items(state.comments) { (comment, isCommentLicked) ->
+			items(state.comments) { comment ->
 				Comment(
 					modifier = Modifier.padding(12.dp),
 					comment = comment,
-					isCommentLiked = isCommentLicked,
-					onCommentLike = {
-						onCommentLike(comment.id)
-					}
 				)
 			}
 		}
@@ -124,8 +112,6 @@ fun PostScreenComments(
 private fun Comment(
 	modifier: Modifier = Modifier,
 	comment: Comment,
-	isCommentLiked: Boolean,
-	onCommentLike: () -> Unit,
 ) {
 	Column(
 		modifier = modifier,
@@ -156,23 +142,6 @@ private fun Comment(
 					)
 				)
 			}
-
-			TextButton(
-				onClick = onCommentLike,
-			) {
-				Crossfade(targetState = isCommentLiked) {
-					Icon(
-						imageVector = if (it) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-						contentDescription = stringResource(R.string.description_like_post)
-					)
-				}
-
-				Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-
-				Text(
-					text = comment.likes.toString(),
-				)
-			}
 		}
 	}
 }
@@ -186,26 +155,7 @@ private fun CommentPreview() {
 	Comment(
 		modifier = Modifier.padding(12.dp),
 		comment = MOCK_COMMENTS[0],
-		isCommentLiked = isLikedByUser,
-		onCommentLike = {
-			isLikedByUser = !isLikedByUser
-		}
 	)
-}
-
-@Preview
-@Composable
-private fun CommentsPreview() {
-	LazyColumn {
-		itemsIndexed(MOCK_COMMENTS) { index, it ->
-			Comment(
-				modifier = Modifier.padding(12.dp),
-				comment = it,
-				isCommentLiked = false,
-				onCommentLike = {}
-			)
-		}
-	}
 }
 
 @Preview
@@ -213,11 +163,10 @@ private fun CommentsPreview() {
 private fun PostScreenCommentsPreview() {
 	PostScreenComments(
 		state = PostScreenState.Comments(
-			comments = MOCK_COMMENTS.map { it to false },
+			comments = MOCK_COMMENTS,
 			userComment = "",
 			postTitle = "First post"
 		),
-		onCommentLike = {},
 		onUserCommentInput = {},
 		onUserCommentDone = {},
 		onBackPressed = {}

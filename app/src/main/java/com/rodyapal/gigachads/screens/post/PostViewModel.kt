@@ -34,27 +34,15 @@ class PostViewModel(
 
 	private fun reduce(state: PostScreenState.Display, event: PostScreenEvent) {
 		when (event) {
-			is PostScreenEvent.OnLikePost -> viewModelScope.launch {
-				postRepository.setLike(state.post.id, !state.isLikedByUser)?.let {
-					_viewState.update { current ->
-						(current as PostScreenState.Display).copy(
-							post = it,
-							isLikedByUser = !current.isLikedByUser
+			is PostScreenEvent.OnViewCommentsClick -> viewModelScope.launch {
+				commentsRepository.getCommentsForPost(state.post.id).collect { comments ->
+					_viewState.update {
+						PostScreenState.Comments(
+							comments = comments,
+							userComment = "",
+							postTitle = state.post.title
 						)
 					}
-				} ?: _viewState.update { current ->
-					(current as PostScreenState.Display).copy(
-						isError = true
-					)
-				}
-			}
-			is PostScreenEvent.OnViewCommentsClick -> viewModelScope.launch {
-				_viewState.update {
-					PostScreenState.Comments(
-						comments = commentsRepository.getCommentsForPostWithLikeStatus((it as PostScreenState.Display).post.id),
-						userComment = "",
-						postTitle = it.post.title
-					)
 				}
 			}
 			else -> {throw Exception("Invalid state ($state) for event ($event)")}
@@ -63,14 +51,6 @@ class PostViewModel(
 
 	private fun reduce(state: PostScreenState.Comments, event: PostScreenEvent) {
 		when (event) {
-			is PostScreenEvent.OnCommentLike -> viewModelScope.launch {
-				val status = commentsRepository.setLikeStatus(event.commentId)
-				_viewState.update {
-					state.copy(
-						comments = state.comments.map { if (it.first.id == event.commentId) it.first to status else it}
-					)
-				}
-			}
 			is PostScreenEvent.OnUserCommentInput -> viewModelScope.launch {
 				_viewState.update {
 					state.copy(
@@ -81,18 +61,20 @@ class PostViewModel(
 			is PostScreenEvent.OnUserCommentDone -> viewModelScope.launch {
 				commentsRepository.addUserComment(
 					text = state.userComment,
-					postId = state.comments[0].first.parentPostId,
-					author = userRepository.getCurrent()
+					postId = state.comments[0].parentPostId,
+					author = (userRepository.authState.value as UserRepository.AuthState.Authenticated).user
 				)
 			}
 			is PostScreenEvent.OnBackToPost -> viewModelScope.launch {
-				val post = postRepository.getPostById(state.comments[0].first.parentPostId)
-				_viewState.update {
-					PostScreenState.Display(
-						post = post,
-						serverName = serverRepository.getParentServerForPost(post.id).name,
-						isLikedByUser = postRepository.isLikedByCurrentUser(post.id)
-					)
+				postRepository.getPostById(state.comments[0].parentPostId).collect { post ->
+					serverRepository.getServer(post.serverId).collect { server ->
+						_viewState.update {
+							PostScreenState.Display(
+								post = post,
+								serverName = server.name
+							)
+						}
+					}
 				}
 			}
 			else -> {throw Exception("Invalid state ($state) for event ($event)")}
@@ -100,13 +82,15 @@ class PostViewModel(
 	}
 
 	private fun reduce(event: PostScreenEvent.EnterScreen) = viewModelScope.launch {
-		val post = postRepository.getPostById(event.postId)
-		_viewState.update {
-			PostScreenState.Display(
-				post = post,
-				serverName = serverRepository.getParentServerForPost(post.id).name,
-				isLikedByUser = postRepository.isLikedByCurrentUser(post.id)
-			)
+		postRepository.getPostById(event.postId).collect { post ->
+			serverRepository.getServer(post.serverId).collect { server ->
+				_viewState.update {
+					PostScreenState.Display(
+						post = post,
+						serverName = server.name
+					)
+				}
+			}
 		}
 	}
 }

@@ -1,45 +1,54 @@
 package com.rodyapal.gigachads.model.repository
 
-import com.rodyapal.gigachads.model.dao.PostDao
 import com.rodyapal.gigachads.model.entity.Post
+import com.rodyapal.gigachads.model.local.dao.PostDao
 import com.rodyapal.gigachads.model.network.api.PostApi
-import kotlinx.coroutines.delay
+import com.rodyapal.gigachads.utils.instantCombine
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEmpty
 
 class PostRepository(
-	private val postDao: PostDao,
-	private val postApi: PostApi,
-	private val serverRepository: ServerRepository,
-	private val userRepository: UserRepository
+	private val dao: PostDao,
+	private val api: PostApi,
 ) {
-	suspend fun getPostById(postId: Long): Post {
-		delay(2000)
-		return postDao.getById(postId)
+	suspend fun getPostById(postId: Long): Flow<Post> {
+		return dao
+			.getById(postId)
+			.onEmpty {
+				refreshPost(postId)
+			}.map {
+				it.toDomainModel()
+			}
 	}
 
-	suspend fun getPostsForServer(serverId: Long): List<Post> {
-		return postDao.getByServerId(serverId).ifEmpty {
-			postApi.getByServerId(serverId)
-		}.also {
-			updateData()
+	private suspend fun refreshPost(postId: Long) {
+		api.get(postId).let { post ->
+			dao.save(
+				post.toDomainModel().toPostEntity()
+			)
 		}
 	}
 
-	suspend fun isLikedByCurrentUser(postId: Long): Boolean {
-		return postDao.isLikedByCurrentUser(postId)
+	suspend fun getPostsForServer(serverId: Long): Flow<List<Post>> {
+		return dao.getByServerId(serverId).onEmpty {
+			refreshPostsForServer(serverId)
+		}.map { posts ->
+			posts.map { it.toDomainModel() }
+		}
 	}
 
-	private suspend fun updateData() {
-		//TODO: implement
+	suspend fun getPostsForServers(ids: List<Long>): Flow<List<List<Post>?>> {
+		return instantCombine(
+			ids.map {
+				getPostsForServer(it)
+			}
+		)
 	}
 
-	suspend fun getPostsForCurrentUser(): List<Post> {
-		return userRepository.getFavoriteServers().let {
-			serverRepository.getServers(it)
-		}.flatMap { getPostsForServer(it.serverId) }
-	}
-
-	suspend fun setLike(postId: Long, like: Boolean): Post? {
-		//TODO: implement
-		return null
+	private suspend fun refreshPostsForServer(serverId: Long) {
+		api.getByServerId(serverId).let { posts ->
+			dao.save(posts.map { it.toDomainModel().toPostEntity() })
+		}
 	}
 }

@@ -45,6 +45,11 @@ fun SearchScreen(
 						SearchScreenEvent.OnQueryChange(it)
 					)
 				},
+				onQueryCompleted = {
+					viewModel.reduce(
+						SearchScreenEvent.OnQueryCompleted(it)
+					)
+				},
 				onBackPressed = {
 					viewModel.reduce(
 						SearchScreenEvent.OnAbortSearch

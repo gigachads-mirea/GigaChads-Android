@@ -3,6 +3,8 @@ package com.rodyapal.gigachads.screens.serverposts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rodyapal.gigachads.model.Reducer
+import com.rodyapal.gigachads.model.entity.Post
+import com.rodyapal.gigachads.model.entity.Server
 import com.rodyapal.gigachads.model.repository.PostRepository
 import com.rodyapal.gigachads.model.repository.ServerRepository
 import com.rodyapal.gigachads.model.repository.UserRepository
@@ -12,6 +14,7 @@ import com.rodyapal.gigachads.screens.serverposts.model.ServerPostsScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
 class ServerPostsViewModel(
@@ -27,17 +30,21 @@ class ServerPostsViewModel(
 		when(val state = viewState.value) {
 			is ServerPostsScreenState.Display -> {}
 			is ServerPostsScreenState.Loading -> viewModelScope.launch {
-				_viewState.update {
-					ServerPostsScreenState.Display(
-						serversWithPosts = serverRepository.getServers(
-							userRepository.getFavoriteServers()
-						).map {
-							PostsForServer(
-								serverName = it.name,
-								posts = postRepository.getPostsForServer(it.serverId)
+				userRepository.getFavoriteServerIds().collect { ids ->
+					serverRepository.getServers(ids).zip(
+						postRepository.getPostsForServers(ids)
+					) { servers: List<Server>, posts: List<List<Post>?> ->
+						_viewState.update {
+							ServerPostsScreenState.Display(
+								serversWithPosts = servers.mapIndexed { index, server ->
+									PostsForServer(
+										serverName = server.name,
+										posts = posts[index]!!
+									)
+								}
 							)
 						}
-					)
+					}
 				}
 			}
 		}

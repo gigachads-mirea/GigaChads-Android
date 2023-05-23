@@ -73,7 +73,7 @@ class RegisterViewModel(
 				with(viewState.value) {
 					isValid().let {
 						val success = userRepository.register(
-							login = email,
+							email = email,
 							password = password,
 							username = username
 						)

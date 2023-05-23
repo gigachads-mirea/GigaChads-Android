@@ -6,6 +6,9 @@ sealed class SearchScreenEvent {
 	data class OnQueryChange(
 		val query: String
 	) : SearchScreenEvent()
+	data class OnQueryCompleted(
+		val query: String
+	) : SearchScreenEvent()
 	object OnAbortSearch : SearchScreenEvent()
 	object OnClearInput : SearchScreenEvent()
 	data class OnServerSelected(

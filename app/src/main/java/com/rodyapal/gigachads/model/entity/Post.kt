@@ -1,28 +1,20 @@
 package com.rodyapal.gigachads.model.entity
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Relation
-import kotlinx.serialization.Serializable
+import com.rodyapal.gigachads.model.local.entity.PostEntity
 
-@Serializable
-@Entity(tableName = "posts")
 data class Post(
 	val title: String,
 	val content: String,
 	val writtenAt: Long,
-	val likes: Int,
 	val serverId: Long,
-	@PrimaryKey
 	val id: Long
-)
+) {
+	fun toPostEntity() = PostEntity(
+		title, content, writtenAt, serverId, id
+	)
+}
 
 data class PostWithComments(
-	@Embedded val post: Post,
-	@Relation(
-		parentColumn = "id",
-		entityColumn = "parentPostId"
-	)
+	val post: Post,
 	val comments: List<Comment>
 )

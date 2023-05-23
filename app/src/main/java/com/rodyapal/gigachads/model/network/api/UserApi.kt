@@ -1,20 +1,23 @@
 package com.rodyapal.gigachads.model.network.api
 
-import com.rodyapal.gigachads.model.entity.User
-import com.rodyapal.gigachads.model.network.ktorClient
+import com.rodyapal.gigachads.model.network.entity.NetworkUser
 import io.ktor.client.HttpClient
 
+const val USER_API_URL = ""
 class UserApi(
-	client: HttpClient,
-	baseURL: String
-) : BaseApi<User>(client, baseURL) {
-	suspend fun auth(login: String, password: String): User? {
+	private val client: HttpClient,
+) {
+	suspend fun auth(email: String, password: String): NetworkUser? {
 		//TODO: implement
 		return null
 	}
-	suspend fun register(login: String, password: String, username: String): User? {
+	suspend fun register(email: String, password: String, username: String): NetworkUser? {
 		//TODO: implement
-		ktorClient
 		return null
+	}
+
+	suspend fun getFavoriteServerIds(userId: Long): List<Long> {
+		//TODO: implement
+		return listOf(9876L)
 	}
 }

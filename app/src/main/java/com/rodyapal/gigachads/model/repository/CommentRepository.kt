@@ -1,35 +1,38 @@
 package com.rodyapal.gigachads.model.repository
 
-import com.rodyapal.gigachads.model.dao.CommentDao
 import com.rodyapal.gigachads.model.entity.Comment
-import com.rodyapal.gigachads.model.entity.LikedComment
 import com.rodyapal.gigachads.model.entity.User
+import com.rodyapal.gigachads.model.local.dao.CommentDao
+import com.rodyapal.gigachads.model.local.entity.CommentEntity
 import com.rodyapal.gigachads.model.network.api.CommentApi
+import com.rodyapal.gigachads.model.network.entity.NetworkUserComment
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 
 class CommentRepository(
 	private val dao: CommentDao,
 	private val api: CommentApi
 ) {
-	suspend fun getCommentsForPost(postId: Long): List<Comment> {
-		//TODO: implement
-		return dao.getByPostId(postId).ifEmpty { api.getByPostId(postId) }
+	suspend fun getCommentsForPost(postId: Long): Flow<List<Comment>> {
+		return dao
+			.getByPostId(postId)
+			.map { cache ->
+				cache.map { it.toDomainModel() }
+			}
+			.onEach { comments ->
+				if (comments.isEmpty()) { //TODO: check it works
+					refreshComments(postId)
+				}
+			}
 	}
 
-	suspend fun getCommentsForPostWithLikeStatus(postId: Long): List<Pair<Comment, Boolean>> {
-		return getCommentsForPost(postId).map { it to isCommentLikedByUser(it.id) }
-	}
-
-	suspend fun isCommentLikedByUser(commentId: Long): Boolean = dao.isLikedByCurrentUser(commentId)
-
-	suspend fun setLikeStatus(commentId: Long): Boolean {
-		return if (isCommentLikedByUser(commentId)) {
-			dao.setCommentLiked(LikedComment(commentId))
-			false
-		} else {
-			dao.setCommentLiked(LikedComment(commentId))
-			true
+	private suspend fun refreshComments(postId: Long) {
+		api.getByPostId(postId).map {
+			it.toDomainModel().toEntityModel()
+		}.also {
+			dao.save(it)
 		}
-		//TODO: Network
 	}
 
 	suspend fun addUserComment(text: String, postId: Long, author: User) {
@@ -37,11 +40,19 @@ class CommentRepository(
 			authorName = author.username,
 			text = text,
 			writtenAt = System.currentTimeMillis(),
-			likes = 0,
 			parentPostId = postId,
-			id = 0,
+			id = -1, //indicate that it should be processed
 		)
-		api.post(comment) //TODO: return value
-		dao.save(comment)
+		api.postComment(NetworkUserComment.from(comment)).let {
+			dao.save(
+				CommentEntity(
+					comment.authorName,
+					comment.text,
+					comment.writtenAt,
+					comment.parentPostId,
+					id = it
+				)
+			)
+		}
 	}
 }

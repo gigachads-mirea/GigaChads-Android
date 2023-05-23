@@ -2,6 +2,7 @@ package com.rodyapal.gigachads
 
 import android.app.Application
 import com.rodyapal.gigachads.di.databaseModule
+import com.rodyapal.gigachads.di.networkModule
 import com.rodyapal.gigachads.di.repositoryModule
 import com.rodyapal.gigachads.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
@@ -17,7 +18,8 @@ class App : Application() {
 			modules(
 				databaseModule,
 				repositoryModule,
-				viewModelModule
+				viewModelModule,
+				networkModule
 			)
 		}
 	}

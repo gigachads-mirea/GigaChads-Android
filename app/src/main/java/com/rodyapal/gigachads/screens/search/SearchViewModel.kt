@@ -30,17 +30,7 @@ class SearchViewModel(
 
 	private fun reduce(state: SearchScreenState.Display, event: SearchScreenEvent) {
 		when (event) {
-			is SearchScreenEvent.EnterScreen -> viewModelScope.launch {
-				SearchScreenState.Display(
-					searchHistory = serverRepository.getServerSearchHistory().map {
-						ServerBasicInfo(
-							serverId = it.serverId,
-							serverName = it.name,
-							gameName = gameRepository.getById(it.gameId).name
-						)
-					}
-				)
-			}
+			is SearchScreenEvent.EnterScreen -> fetchData()
 			is SearchScreenEvent.OnSearchClick -> _viewState.update {
 				SearchScreenState.Search(
 					query = "",
@@ -56,9 +46,9 @@ class SearchViewModel(
 			is SearchScreenEvent.OnQueryChange -> viewModelScope.launch {
 				_viewState.update {
 					SearchScreenState.Search(
-						query = state.query,
+						query = event.query,
 						suggestions = serverRepository.getServerSearchSuggestions(
-							state.query.filter { it == ';' || it == '%' || it == '_' }
+							event.query.filter { it == ';' || it == '%' || it == '_' }
 						).map {
 							ServerBasicInfo(
 								serverId = it.serverId,
@@ -69,7 +59,20 @@ class SearchViewModel(
 					)
 				}
 			}
-			is SearchScreenEvent.OnAbortSearch -> reduce(SearchScreenEvent.EnterScreen)
+			is SearchScreenEvent.OnQueryCompleted -> viewModelScope.launch {
+				_viewState.update {
+					state.copy(
+						suggestions = serverRepository.searchServer(event.query).map {
+							ServerBasicInfo(
+								serverId = it.serverId,
+								serverName = it.name,
+								gameName = gameRepository.getById(it.gameId).name
+							)
+						}
+					)
+				}
+			}
+			is SearchScreenEvent.OnAbortSearch -> fetchData()
 			is SearchScreenEvent.OnClearInput -> _viewState.update {
 				state.copy(query = "")
 			}
@@ -77,6 +80,20 @@ class SearchViewModel(
 				serverRepository.setWasSearched(event.serverId)
 			}
 			else -> throw Exception("Invalid state ($state) for event ($event)")
+		}
+	}
+
+	private fun fetchData() = viewModelScope.launch {
+		_viewState.update {
+			SearchScreenState.Display(
+				searchHistory = serverRepository.getServerSearchHistory().map {
+					ServerBasicInfo(
+						serverId = it.serverId,
+						serverName = it.name,
+						gameName = gameRepository.getById(it.gameId).name
+					)
+				}
+			)
 		}
 	}
 }

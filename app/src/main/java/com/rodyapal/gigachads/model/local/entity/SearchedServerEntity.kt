@@ -1,10 +1,10 @@
-package com.rodyapal.gigachads.model.entity
+package com.rodyapal.gigachads.model.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity("searched_servers")
-data class SearchedServer(
+data class SearchedServerEntity(
 	@PrimaryKey
 	val serverId: Long
 )

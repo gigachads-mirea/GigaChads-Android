@@ -18,17 +18,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,66 +38,49 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.rodyapal.gigachads.R
-import com.rodyapal.gigachads.screens.Screen
 import com.rodyapal.gigachads.screens.login.model.LoginScreenEvent
 import com.rodyapal.gigachads.screens.login.model.LoginScreenState
-import com.rodyapal.gigachads.ui.theme.GigachadsTheme
 import com.rodyapal.gigachads.utils.TextFieldState
 import com.rodyapal.gigachads.utils.isEmailValid
 import com.rodyapal.gigachads.utils.isPasswordValid
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
 	onSuccessfulLogin: () -> Unit,
 	onMoveToRegister: () -> Unit,
+	onLoginError: @Composable () -> Unit,
 	viewModel: LoginViewModel = koinViewModel(),
 ) {
 	val state = viewModel.viewState.collectAsState()
-	val scope = rememberCoroutineScope()
-	val snackbarHostState = remember { SnackbarHostState() }
-	Scaffold(
-		snackbarHost = {
-			SnackbarHost(hostState = snackbarHostState)
-		}
-	) {
-		if (state.value.isLoginError) {
-			SideEffect {
-				scope.launch {
-					snackbarHostState.showSnackbar("Login error occurred")
-				}
-			}
-		}
-		LoginScreenDisplay(
-			modifier = Modifier.padding(it),
-			state = state.value,
-			onEmailInput = {
-				viewModel.reduce(
-					LoginScreenEvent.OnEmailInput(it)
-				)
-			},
-			onPasswordInput = {
-				viewModel.reduce(
-					LoginScreenEvent.OnPasswordInput(it)
-				)
-			},
-			onLoginClick = {
-				viewModel.reduce(LoginScreenEvent.OnLoginClick {
-					onSuccessfulLogin()
-				})
-			},
-			onRegisterClick = {
-				onMoveToRegister()
-			},
-			onPasswordVisibilityClick = {
-				viewModel.reduce(LoginScreenEvent.OnPasswordVisibilityClick)
-			}
-		)
+	if (state.value.isLoginError) {
+		onLoginError()
 	}
+	LoginScreenDisplay(
+		state = state.value,
+		onEmailInput = {
+			viewModel.reduce(
+				LoginScreenEvent.OnEmailInput(it)
+			)
+		},
+		onPasswordInput = {
+			viewModel.reduce(
+				LoginScreenEvent.OnPasswordInput(it)
+			)
+		},
+		onLoginClick = {
+			viewModel.reduce(LoginScreenEvent.OnLoginClick {
+				onSuccessfulLogin()
+			})
+		},
+		onRegisterClick = {
+			onMoveToRegister()
+		},
+		onPasswordVisibilityClick = {
+			viewModel.reduce(LoginScreenEvent.OnPasswordVisibilityClick)
+		}
+	)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

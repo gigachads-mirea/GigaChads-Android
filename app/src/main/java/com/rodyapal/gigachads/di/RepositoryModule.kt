@@ -8,9 +8,9 @@ import com.rodyapal.gigachads.model.repository.UserRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
-	single { UserRepository(get()) }
+	single { UserRepository(get(), get()) }
 	single { ServerRepository(get(), get()) }
 	single { CommentRepository(get(), get()) }
 	single { GameRepository(get(), get()) }
-	single { PostRepository(get(), get(), get(), get()) }
+	single { PostRepository(get(), get()) }
 }

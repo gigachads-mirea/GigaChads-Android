@@ -34,7 +34,6 @@ val MOCK_POSTS = listOf(
 		title = "First post",
 		content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim suspendisse in est ante in. Sagittis nisl rhoncus mattis rhoncus urna neque viverra justo. Pellentesque elit eget gravida cum sociis natoque. Lectus proin nibh nisl condimentum id. Mattis pellentesque id nibh tortor id aliquet lectus. Molestie at elementum eu facilisis sed.",
 		writtenAt = System.currentTimeMillis(),
-		likes = 10,
 		serverId = MOCK_SERVER.serverId,
 		id = 1L
 	),
@@ -42,7 +41,6 @@ val MOCK_POSTS = listOf(
 		title = "Second post",
 		content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim suspendisse in est ante in. Sagittis nisl rhoncus mattis rhoncus urna neque viverra justo. Pellentesque elit eget gravida cum sociis natoque. Lectus proin nibh nisl condimentum id. Mattis pellentesque id nibh tortor id aliquet lectus. Molestie at elementum eu facilisis sed.",
 		writtenAt = System.currentTimeMillis() + 1000,
-		likes = 5,
 		serverId = MOCK_SERVER.serverId,
 		id = 2L
 	),
@@ -50,7 +48,6 @@ val MOCK_POSTS = listOf(
 		title = "Third post",
 		content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ",
 		writtenAt = System.currentTimeMillis() + 10000,
-		likes = 10,
 		serverId = MOCK_SERVER.serverId,
 		id = 3L
 	),
@@ -58,7 +55,6 @@ val MOCK_POSTS = listOf(
 		title = "Fourth post",
 		content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
 		writtenAt = System.currentTimeMillis() + 100000,
-		likes = 5,
 		serverId = MOCK_SERVER.serverId,
 		id = 4L
 	),
@@ -66,7 +62,6 @@ val MOCK_POSTS = listOf(
 		title = "Firth post",
 		content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim suspendisse in est ante in. Sagittis nisl rhoncus mattis rhoncus urna neque viverra justo. Pellentesque elit eget gravida cum sociis natoque. Lectus proin nibh nisl condimentum id.",
 		writtenAt = System.currentTimeMillis() + 200000,
-		likes = 10,
 		serverId = MOCK_SERVER.serverId,
 		id = 5L
 	),
@@ -74,7 +69,6 @@ val MOCK_POSTS = listOf(
 		title = "Sixth post",
 		content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim suspendisse in est ante in. Sagittis nisl rhoncus mattis rhoncus urna neque viverra justo. Pellentesque elit eget gravida cum sociis natoque. Lectus proin nibh nisl condimentum id. Mattis pellentesque id nibh tortor id aliquet lectus. Molestie at elementum eu facilisis sed.",
 		writtenAt = System.currentTimeMillis() + 300000,
-		likes = 5,
 		serverId = MOCK_SERVER.serverId,
 		id = 6L
 	),
@@ -98,10 +92,10 @@ val MOCK_SERVER_SCREEN_STATE_POSTS = ServerScreenState.Posts(
 
 @Deprecated("Dev only")
 val MOCK_COMMENTS = listOf(
-	Comment("John", "Great post!", System.currentTimeMillis(), 10, 1L, 100L),
-	Comment("Jane", "I disagree with your opinion.", 1609600000000L, 5, 2L, 100L),
-	Comment("Mike", "Thanks for sharing.", 1622505600000L, 8, 3L, 101L),
-	Comment("Sarah", "This is so helpful, thanks!", 1630454400000L, 12, 4L, 102L),
-	Comment("Tom", "Interesting, I'd like to know more about this topic.", 1633084800000L, 6, 5L, 102L),
-	Comment("Emily", "I'm confused, can you please explain it better?", 1640995200000L, 3, 6L, 103L)
+	Comment("John", "Great post!", System.currentTimeMillis(), 1L, 100L),
+	Comment("Jane", "I disagree with your opinion.", 1609600000000L, 2L, 100L),
+	Comment("Mike", "Thanks for sharing.", 1622505600000L, 3L, 101L),
+	Comment("Sarah", "This is so helpful, thanks!", 1630454400000L, 4L, 102L),
+	Comment("Tom", "Interesting, I'd like to know more about this topic.", 1633084800000L, 5L, 102L),
+	Comment("Emily", "I'm confused, can you please explain it better?", 1640995200000L, 6L, 103L)
 )

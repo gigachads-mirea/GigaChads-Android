@@ -37,7 +37,7 @@ class ServerViewModel(
 	private fun reduce(state: ServerScreenState.Info, event: ServerScreenEvent) {
 		when (event) {
 			is ServerScreenEvent.OnAddToFavorite -> viewModelScope.launch {
-				val userId = userRepository.getCurrent().userId
+				val userId = (userRepository.authState.value as UserRepository.AuthState.Authenticated).user.userId
 				if (serverRepository.isFavorite(userId, state.server.serverId)) {
 					serverRepository.setFavorite(userId, state.server.serverId)
 				} else {
@@ -45,11 +45,13 @@ class ServerViewModel(
 				}
 			}
 			is ServerScreenEvent.OnSeeOtherPosts -> viewModelScope.launch {
-				_viewState.update {
-					ServerScreenState.Posts(
-						serverName = state.server.name,
-						posts = postRepository.getPostsForServer(state.server.serverId)
-					)
+				postRepository.getPostsForServer(state.server.serverId).collect { posts ->
+					_viewState.update {
+						ServerScreenState.Posts(
+							serverName = state.server.name,
+							posts = posts
+						)
+					}
 				}
 			}
 			else -> throw Exception("Invalid state ($state) for event ($event)")
@@ -64,13 +66,16 @@ class ServerViewModel(
 	}
 
 	private fun fetchData(serverId: Long) = viewModelScope.launch {
-		_viewState.update {
-			val data = serverRepository.getById(serverId)
-			ServerScreenState.Info(
-				server = data.server,
-				latestPost = data.posts.maxBy { it.writtenAt },
-				gameName = gameRepository.getById(data.server.gameId).name
-			)
+		serverRepository.getById(serverId).collect { server ->
+			postRepository.getPostsForServer(server.serverId).collect { posts ->
+				_viewState.update {
+					ServerScreenState.Info(
+						server = server,
+						latestPost = posts.maxBy { it.writtenAt },
+						gameName = gameRepository.getById(server.gameId).name
+					)
+				}
+			}
 		}
 	}
 }

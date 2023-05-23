@@ -17,6 +17,7 @@ import com.rodyapal.gigachads.screens.search.view.ServerSearchItem
 fun SearchScreenSearch(
 	state: SearchScreenState.Search,
 	onQueryChange: (String) -> Unit,
+	onQueryCompleted: (String) -> Unit,
 	onBackPressed: () -> Unit,
 	onClearInput: () -> Unit,
 	onServerClicked: (Long) -> Unit,
@@ -29,6 +30,7 @@ fun SearchScreenSearch(
 		SearchView(
 			query = state.query,
 			onQueryChange = onQueryChange,
+			onQueryCompleted = onQueryCompleted,
 			onNavigateBack = onBackPressed,
 			onClearInput = onClearInput,
 		) {

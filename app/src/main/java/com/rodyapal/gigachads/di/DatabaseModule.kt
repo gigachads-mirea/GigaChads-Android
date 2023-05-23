@@ -1,7 +1,7 @@
 package com.rodyapal.gigachads.di
 
 import androidx.room.Room
-import com.rodyapal.gigachads.model.database.AppDatabase
+import com.rodyapal.gigachads.model.local.database.AppDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 

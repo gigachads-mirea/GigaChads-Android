@@ -1,6 +1,5 @@
 package com.rodyapal.gigachads.screens.post.subscreens
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,24 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -42,7 +30,6 @@ import java.text.SimpleDateFormat
 fun PostScreenDisplay(
 	modifier: Modifier = Modifier,
 	state: PostScreenState.Display,
-	onLikeClick: () -> Unit,
 	onViewCommentsClick: () -> Unit,
 ) {
 	Column(
@@ -66,9 +53,6 @@ fun PostScreenDisplay(
 				.fillMaxWidth()
 				.padding(12.dp),
 			content = state.post.content,
-			likes = state.post.likes,
-			isLikedByUser = state.isLikedByUser,
-			onLikeClick = onLikeClick,
 			onViewCommentsClick = onViewCommentsClick
 		)
 	}
@@ -114,9 +98,6 @@ private fun Header(
 private fun PostBody(
 	modifier: Modifier = Modifier,
 	content: String,
-	likes: Int,
-	isLikedByUser: Boolean,
-	onLikeClick: () -> Unit,
 	onViewCommentsClick: () -> Unit,
 ) {
 	Column(
@@ -132,26 +113,9 @@ private fun PostBody(
 
 		Row(
 			modifier = Modifier.fillMaxWidth(),
-			horizontalArrangement = Arrangement.SpaceBetween,
+			horizontalArrangement = Arrangement.End,
 			verticalAlignment = Alignment.CenterVertically
 		) {
-			OutlinedButton(
-				onClick = onLikeClick,
-			) {
-				Crossfade(targetState = isLikedByUser) {
-					Icon(
-						imageVector = if (it) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-						contentDescription = stringResource(R.string.description_like_post)
-					)
-				}
-
-				Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-
-				Text(
-					text = likes.toString(),
-				)
-			}
-
 			TextButton(
 				onClick = onViewCommentsClick
 			) {
@@ -179,19 +143,11 @@ private fun HeaderPreview() {
 @Preview
 @Composable
 private fun PostBodyPreview() {
-	var isLikedByUser by remember {
-		mutableStateOf(false)
-	}
 	PostBody(
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(12.dp),
 		content = MOCK_POSTS[0].content,
-		likes = MOCK_POSTS[0].likes,
-		isLikedByUser = isLikedByUser,
-		onLikeClick = {
-			isLikedByUser = !isLikedByUser
-		},
 		onViewCommentsClick = {}
 	)
 }
@@ -203,9 +159,7 @@ private fun PostScreenDisplayPreview() {
 		state = PostScreenState.Display(
 			post = MOCK_POSTS[0],
 			serverName = "Server name",
-			isLikedByUser = false
 		),
-		onLikeClick = {},
 		onViewCommentsClick = {}
 	)
 }
