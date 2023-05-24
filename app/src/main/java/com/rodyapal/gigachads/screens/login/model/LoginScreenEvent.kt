@@ -15,4 +15,6 @@ sealed class LoginScreenEvent {
 		val navigate: () -> Unit
 	) : LoginScreenEvent()
 	object OnLoginError : LoginScreenEvent()
+
+	object OnLoginErrorEnd : LoginScreenEvent()
 }

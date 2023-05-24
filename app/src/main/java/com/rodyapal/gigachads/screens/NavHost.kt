@@ -6,7 +6,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -66,6 +65,7 @@ fun AppNavHost(
 				)
 			}
 			composable(Screen.Login.route) {
+				val errorMessage = stringResource(R.string.text_login_error_message)
 				LoginScreen(
 					onMoveToRegister = {
 						navController.navigate(Screen.Register.route)
@@ -74,11 +74,8 @@ fun AppNavHost(
 						navController.navigate(Screen.homeScreen.route)
 					},
 					onLoginError = {
-						val message = stringResource(R.string.text_login_error_message)
-						SideEffect {
-							scope.launch {
-								snackbarHostState.showSnackbar(message)
-							}
+						scope.launch {
+							snackbarHostState.showSnackbar(errorMessage)
 						}
 					}
 				)

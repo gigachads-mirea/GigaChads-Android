@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,18 +45,23 @@ import com.rodyapal.gigachads.screens.login.model.LoginScreenState
 import com.rodyapal.gigachads.utils.TextFieldState
 import com.rodyapal.gigachads.utils.isEmailValid
 import com.rodyapal.gigachads.utils.isPasswordValid
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
 	onSuccessfulLogin: () -> Unit,
 	onMoveToRegister: () -> Unit,
-	onLoginError: @Composable () -> Unit,
+	onLoginError: () -> Unit,
 	viewModel: LoginViewModel = koinViewModel(),
 ) {
 	val state = viewModel.viewState.collectAsState()
-	if (state.value.isLoginError) {
-		onLoginError()
+	if(state.value.isLoginError) {
+		LaunchedEffect(key1 = Unit) {
+			onLoginError()
+			delay(500)
+			viewModel.reduce(LoginScreenEvent.OnLoginErrorEnd)
+		}
 	}
 	LoginScreenDisplay(
 		state = state.value,
@@ -96,7 +102,9 @@ fun LoginScreenDisplay(
 ) {
 	if (state.isLoginInProgress) {
 		LinearProgressIndicator(
-			modifier = Modifier.fillMaxWidth().testTag("progressIndicator")
+			modifier = Modifier
+				.fillMaxWidth()
+				.testTag("progressIndicator")
 		)
 	}
 	Column(
