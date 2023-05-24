@@ -52,7 +52,7 @@ class RegisterViewModel(
 			}
 			is RegisterScreenEvent.OnPasswordVisibilityClick -> _viewState.update {
 				it.copy(
-					isConfirmVisible = !it.isConfirmVisible
+					isPasswordVisible = !it.isPasswordVisible
 				)
 			}
 			is RegisterScreenEvent.OnConfirmInput -> _viewState.update {
