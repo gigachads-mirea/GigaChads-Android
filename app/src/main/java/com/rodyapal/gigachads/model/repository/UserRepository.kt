@@ -36,14 +36,18 @@ class UserRepository(
 	}
 	suspend fun auth(
 		email: String, password: String
-	): Boolean = api.auth(email, password)?.also { user ->
-		onAuth(user.toDomainModel())
+	): Boolean = api.auth(email, password)?.also { (username, id) ->
+		onAuth(User(
+			username, email, password, false, id
+		))
 	} != null
 
 	suspend fun register(
 		email: String, password: String, username: String
-	): Boolean = api.register(email, password, username)?.also { user ->
-		onAuth(user.toDomainModel())
+	): Boolean = api.register(email, password, username)?.also { id ->
+		onAuth(User(
+			username, email, password, false, id
+		))
 	} != null
 
 	suspend fun getFavoriteServerIds(): Flow<List<Long>> {
