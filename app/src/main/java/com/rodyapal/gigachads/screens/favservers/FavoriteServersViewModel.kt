@@ -36,10 +36,16 @@ class FavoriteServersViewModel(
 						)
 					}
 				}.collect { servers ->
-					_viewState.update {
-						FavoriteServersScreenState.Display(
-							servers = servers
-						)
+					if (servers.isEmpty()) {
+						_viewState.update {
+							FavoriteServersScreenState.Empty
+						}
+					} else {
+						_viewState.update {
+							FavoriteServersScreenState.Display(
+								servers = servers
+							)
+						}
 					}
 				}
 			}
