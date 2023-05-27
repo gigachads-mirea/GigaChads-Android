@@ -5,6 +5,7 @@ import com.rodyapal.gigachads.model.local.dao.PostDao
 import com.rodyapal.gigachads.model.network.api.PostApi
 import com.rodyapal.gigachads.utils.instantCombine
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEmpty
 
@@ -38,13 +39,12 @@ class PostRepository(
 		}
 	}
 
-	suspend fun getPostsForServers(ids: List<Long>): Flow<List<List<Post>?>> {
-		return instantCombine(
+	suspend fun getPostsForServers(ids: List<Long>): Flow<List<List<Post>?>> =
+		if (ids.isEmpty()) emptyFlow() else instantCombine(
 			ids.map {
 				getPostsForServer(it)
 			}
 		)
-	}
 
 	private suspend fun refreshPostsForServer(serverId: Long) {
 		api.getByServerId(serverId).let { posts ->
