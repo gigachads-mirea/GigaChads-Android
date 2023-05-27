@@ -3,9 +3,8 @@ package com.rodyapal.gigachads.model.local.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.Relation
 import com.rodyapal.gigachads.model.entity.Server
-import com.rodyapal.gigachads.model.entity.ServerWithPosts
+import com.rodyapal.gigachads.model.entity.ServerWithGameName
 
 @Entity(tableName = "servers")
 data class ServerEntity(
@@ -26,15 +25,12 @@ data class ServerEntity(
 	)
 }
 
-//data class ServerWithPostsEntity(
-//	@Embedded val server: ServerEntity,
-//	@Relation(
-//		parentColumn = "serverId",
-//		entityColumn = "serverId"
-//	)
-//	val posts: List<PostEntity>
-//) {
-//	fun toDomainModel() = ServerWithPosts(
-//		server.toDomainModel(), posts.map { it.toDomainModel() }
-//	)
-//}
+data class ServerWithGameNameEntity(
+	@Embedded val server: ServerEntity,
+	val gameName: String
+) {
+	fun toDomainModel() = ServerWithGameName(
+		server = server.toDomainModel(),
+		gameName = gameName
+	)
+}

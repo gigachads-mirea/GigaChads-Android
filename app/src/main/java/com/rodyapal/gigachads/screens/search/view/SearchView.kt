@@ -19,7 +19,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -73,15 +76,22 @@ private fun Header(
 		delay(100)
 		keyboard?.show()
 	}
+	var localQuery by remember {
+		mutableStateOf("")
+	}
 	LaunchedEffect(key1 = query) {
 		if (query.isNotBlank()) {
-			delay(500)
+			delay(2000)
 			onQueryCompleted(query)
 		}
 	}
 	TextField(
 		value = query,
-		onValueChange = onQueryChange,
+		onValueChange = {
+//			Log.d("onQueryChange", it)
+			onQueryChange(it)
+			localQuery = it
+		},
 		placeholder = { Text("Search") },
 		modifier = Modifier
 			.fillMaxWidth()

@@ -1,8 +1,10 @@
 package com.rodyapal.gigachads.screens.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rodyapal.gigachads.model.Reducer
+import com.rodyapal.gigachads.model.entity.Server
 import com.rodyapal.gigachads.model.repository.GameRepository
 import com.rodyapal.gigachads.model.repository.ServerRepository
 import com.rodyapal.gigachads.screens.favservers.model.ServerBasicInfo
@@ -16,9 +18,10 @@ import kotlinx.coroutines.launch
 class SearchViewModel(
 	private val serverRepository: ServerRepository,
 	private val gameRepository: GameRepository
-): ViewModel(), Reducer<SearchScreenEvent> {
+) : ViewModel(), Reducer<SearchScreenEvent> {
 
-	private val _viewState = MutableStateFlow<SearchScreenState>(SearchScreenState.Display(emptyList()))
+	private val _viewState =
+		MutableStateFlow<SearchScreenState>(SearchScreenState.Display(emptyList()))
 	val viewState get() = _viewState as StateFlow<SearchScreenState>
 
 	override fun reduce(event: SearchScreenEvent) {
@@ -37,6 +40,7 @@ class SearchViewModel(
 					suggestions = state.searchHistory
 				)
 			}
+
 			else -> throw Exception("Invalid state ($state) for event ($event)")
 		}
 	}
@@ -48,21 +52,23 @@ class SearchViewModel(
 					SearchScreenState.Search(
 						query = event.query,
 						suggestions = serverRepository.getServerSearchSuggestions(
-							event.query.filter { it == ';' || it == '%' || it == '_' }
+							event.query.filterNot { it == ';' || it == '%' || it == '_' }
 						).map {
 							ServerBasicInfo(
-								serverId = it.serverId,
-								serverName = it.name,
-								gameName = gameRepository.getById(it.gameId).name
+								serverId = it.server.serverId,
+								serverName = it.server.name,
+								gameName = it.gameName
 							)
 						}
 					)
 				}
 			}
+
 			is SearchScreenEvent.OnQueryCompleted -> viewModelScope.launch {
 				_viewState.update {
+					Log.d("OnQueryCompleted", state.query)
 					state.copy(
-						suggestions = serverRepository.searchServer(event.query).map {
+						suggestions = serverRepository.searchServer(state.query).map {
 							ServerBasicInfo(
 								serverId = it.serverId,
 								serverName = it.name,
@@ -72,13 +78,26 @@ class SearchViewModel(
 					)
 				}
 			}
+
 			is SearchScreenEvent.OnAbortSearch -> fetchData()
-			is SearchScreenEvent.OnClearInput -> _viewState.update {
-				state.copy(query = "")
+			is SearchScreenEvent.OnClearInput -> viewModelScope.launch {
+				_viewState.update {
+					state.copy(
+						query = "",
+						suggestions = serverRepository.getServerSearchHistory().map {
+							ServerBasicInfo(
+								serverId = it.serverId,
+								serverName = it.name,
+								gameName = gameRepository.getById(it.gameId).name
+							)
+						})
+				}
 			}
+
 			is SearchScreenEvent.OnServerSelected -> viewModelScope.launch {
 				serverRepository.setWasSearched(event.serverId)
 			}
+
 			else -> throw Exception("Invalid state ($state) for event ($event)")
 		}
 	}

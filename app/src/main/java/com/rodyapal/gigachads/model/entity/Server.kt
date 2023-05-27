@@ -1,5 +1,6 @@
 package com.rodyapal.gigachads.model.entity
 
+import androidx.room.Embedded
 import com.rodyapal.gigachads.model.local.entity.ServerEntity
 
 data class Server(
@@ -21,4 +22,9 @@ data class Server(
 data class ServerWithPosts(
 	val server: Server,
 	val posts: List<Post>
+)
+
+data class ServerWithGameName(
+	@Embedded val server: Server,
+	val gameName: String
 )

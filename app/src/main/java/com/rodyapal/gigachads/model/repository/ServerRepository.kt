@@ -1,11 +1,13 @@
 package com.rodyapal.gigachads.model.repository
 
 import com.rodyapal.gigachads.model.entity.Server
+import com.rodyapal.gigachads.model.entity.ServerWithGameName
 import com.rodyapal.gigachads.model.local.dao.ServerDao
 import com.rodyapal.gigachads.model.local.entity.SearchedServerEntity
 import com.rodyapal.gigachads.model.local.entity.FavoriteServerEntity
 import com.rodyapal.gigachads.model.network.api.ServerApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEmpty
 
@@ -15,14 +17,14 @@ class ServerRepository(
 ) {
 	suspend fun getServer(id: Long): Flow<Server> = getServers(listOf(id)).map { it.first() }
 	suspend fun getServers(ids: List<Long>): Flow<List<Server>> {
-		return dao.get(ids).onEmpty {
+		return if (ids.isEmpty()) emptyFlow() else dao.get(ids).onEmpty {
 			refreshServers(ids)
 		}.map { servers ->
 			servers.map { it.toDomainModel() }
 		}
 	}
 
-	private suspend fun refreshServers(ids: List<Long>) {
+	private suspend fun refreshServers(ids: List<Long>) = ids.isNotEmpty().let {
 		api.getServers(ids).let { servers ->
 			dao.save(servers.map { it.toDomainModel().toServerEntity() })
 		}
@@ -41,7 +43,7 @@ class ServerRepository(
 	suspend fun getServerSearchHistory(): List<Server> =
 		dao.getSearchedServers().map { it.toDomainModel() }
 
-	suspend fun getServerSearchSuggestions(query: String): List<Server> =
+	suspend fun getServerSearchSuggestions(query: String): List<ServerWithGameName> =
 		dao.getSearchSuggestions("%$query%").map {
 			it.toDomainModel()
 		}

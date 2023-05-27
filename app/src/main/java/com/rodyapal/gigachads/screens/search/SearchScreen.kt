@@ -1,5 +1,6 @@
 package com.rodyapal.gigachads.screens.search
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,6 +20,10 @@ fun SearchScreen(
 		viewModel.reduce(
 			SearchScreenEvent.EnterScreen
 		)
+	}
+	LaunchedEffect(key1 = viewState.value) {
+		val state = viewState.value
+		Log.d("SEARCH_STATE", state.toString())
 	}
 	when (val state = viewState.value) {
 		is SearchScreenState.Display -> {

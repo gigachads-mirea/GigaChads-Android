@@ -15,7 +15,9 @@ class ServerApi(
 	private val apiPath: String
 ) {
 	suspend fun searchServer(query: String): List<NetworkServer> = client.get("$apiPath/search") {
-		setBody(query)
+		url {
+			parameters.append("query", query)
+		}
 	}.body()
 
 	suspend fun addToFavorite(serverId: Long, userId: Long) = client.post("$apiPath/favorite") {

@@ -103,13 +103,16 @@ fun MockRequestHandleScope.respondServers(request: HttpRequestData): HttpRespons
 		)
 		HttpMethod.Get -> {
 			if (request.url.fullPath.contains("search")) { //search
-				val query = request.url.encodedQuery
+				val query = request.url.encodedQuery.substringAfter('=').lowercase()
+				val result = if (query.isNotBlank()) {
+					SERVERS.filter {
+						it.name.lowercase().contains(query) or query.contains(it.name.lowercase()) or it.description.lowercase().contains(query)
+					}.ifEmpty { SERVERS }
+				} else {
+					SERVERS
+				}
 				respond(
-					content = Json.encodeToString(
-						SERVERS.filter {
-							it.name.contains(query) or query.contains(it.name) or it.description.contains(query)
-						}
-					),
+					content = Json.encodeToString(result),
 					status = HttpStatusCode.OK,
 					headers = headersOf(HttpHeaders.ContentType, "application/json")
 				)
