@@ -78,7 +78,7 @@ fun RegisterScreen(
 		},
 		onRegisterClick = {
 			viewModel.reduce(
-				RegisterScreenEvent.OnAbortClick
+				RegisterScreenEvent.OnRegisterClick
 			)
 		},
 		onAbortClick = {
