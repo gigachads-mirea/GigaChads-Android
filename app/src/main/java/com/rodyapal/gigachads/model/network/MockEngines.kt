@@ -26,13 +26,13 @@ class ApiMockEngine {
 			addHandler { request ->
 				if (request.url.encodedPath.contains("/comment")) {
 					respondComments(request)
-				} else if (request.url.encodedPath == "/games") {
+				} else if (request.url.encodedPath.contains( "/games")) {
 					respondGames()
-				} else if (request.url.encodedPath == "/posts") {
+				} else if (request.url.encodedPath.contains("/posts")) {
 					respondPosts(request)
-				} else if (request.url.encodedPath == "/servers") {
+				} else if (request.url.encodedPath.contains("/servers")) {
 					respondServers(request)
-				} else if (request.url.encodedPath == "/users") {
+				} else if (request.url.encodedPath.contains("/users")) {
 					respondUsers(request)
 				} else {
 					error("Unhandled ${request.url.encodedPath}")
