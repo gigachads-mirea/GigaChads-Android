@@ -19,7 +19,7 @@ class ApiClient(clientEngine: HttpClientEngine) {
 			header(HttpHeaders.ContentType, ContentType.Application.Json)
 		}
 		ContentEncoding {
-			deflate(1.1F)
+			deflate(1.0F)
 			gzip(0.95F)
 		}
 	}
