@@ -23,27 +23,35 @@ class ServerPostsViewModel(
 	private val userRepository: UserRepository
 ) : ViewModel(), Reducer<ServerPostsScreenEvent> {
 
-	private val _viewState = MutableStateFlow<ServerPostsScreenState>(ServerPostsScreenState.Loading)
+	private val _viewState =
+		MutableStateFlow<ServerPostsScreenState>(ServerPostsScreenState.Loading)
 	val viewState get() = _viewState as StateFlow<ServerPostsScreenState>
 
 	override fun reduce(event: ServerPostsScreenEvent) {
-		when(val state = viewState.value) {
+		when (val state = viewState.value) {
 			is ServerPostsScreenState.Display -> {}
 			is ServerPostsScreenState.Loading -> viewModelScope.launch {
 				userRepository.getFavoriteServerIds().collect { ids ->
-					serverRepository.getServers(ids).zip(
-						postRepository.getPostsForServers(ids)
-					) { servers: List<Server>, posts: List<List<Post>?> ->
+					if (ids.isEmpty()) {
 						_viewState.update {
 							ServerPostsScreenState.Display(
-								serversWithPosts = servers.mapIndexed { index, server ->
-									PostsForServer(
-										serverName = server.name,
-										posts = posts[index]!!
-									)
-								}
+								serversWithPosts = emptyList()
 							)
 						}
+					} else {
+						serverRepository.getServers(ids)
+							.zip(postRepository.getPostsForServers(ids)) { servers: List<Server>, posts: List<List<Post>?> ->
+								_viewState.update {
+									ServerPostsScreenState.Display(
+										serversWithPosts = servers.mapIndexed { index, server ->
+											PostsForServer(
+												serverName = server.name,
+												posts = posts[index]!!
+											)
+										}
+									)
+								}
+							}
 					}
 				}
 			}
