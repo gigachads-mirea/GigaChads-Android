@@ -1,10 +1,8 @@
 package com.rodyapal.gigachads.screens.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rodyapal.gigachads.model.Reducer
-import com.rodyapal.gigachads.model.entity.Server
 import com.rodyapal.gigachads.model.repository.GameRepository
 import com.rodyapal.gigachads.model.repository.ServerRepository
 import com.rodyapal.gigachads.screens.favservers.model.ServerBasicInfo
@@ -66,7 +64,6 @@ class SearchViewModel(
 
 			is SearchScreenEvent.OnQueryCompleted -> viewModelScope.launch {
 				_viewState.update {
-					Log.d("OnQueryCompleted", state.query)
 					state.copy(
 						suggestions = serverRepository.searchServer(state.query).map {
 							ServerBasicInfo(

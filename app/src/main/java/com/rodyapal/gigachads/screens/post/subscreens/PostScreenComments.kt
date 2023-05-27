@@ -16,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -53,29 +54,35 @@ fun PostScreenComments(
 		modifier = modifier.fillMaxSize(),
 		verticalArrangement = Arrangement.SpaceBetween
 	) {
-		Row {
-			IconButton(onClick = onBackPressed) {
-				Icon(
-					imageVector = Icons.Default.ArrowBack,
-					contentDescription = stringResource(R.string.description_back_to_post)
+		Column {
+			Row(
+				verticalAlignment = Alignment.CenterVertically
+			) {
+				IconButton(onClick = onBackPressed) {
+					Icon(
+						imageVector = Icons.Default.ArrowBack,
+						contentDescription = stringResource(R.string.description_back_to_post)
+					)
+				}
+
+				Spacer(modifier = Modifier.width(16.dp))
+
+				Text(
+					modifier = Modifier.padding(12.dp),
+					text = state.postTitle,
+					style = MaterialTheme.typography.headlineLarge
 				)
 			}
-
-			Spacer(modifier = Modifier.width(16.dp))
-
-			Text(
-				text = state.postTitle,
-				style = MaterialTheme.typography.titleMedium
-			)
-		}
-		LazyColumn(
-			modifier = Modifier.fillMaxWidth()
-		) {
-			items(state.comments) { comment ->
-				Comment(
-					modifier = Modifier.padding(12.dp),
-					comment = comment,
-				)
+			Divider()
+			LazyColumn(
+				modifier = Modifier.fillMaxWidth()
+			) {
+				items(state.comments) { comment ->
+					Comment(
+						modifier = Modifier.padding(12.dp),
+						comment = comment,
+					)
+				}
 			}
 		}
 
@@ -136,10 +143,7 @@ private fun Comment(
 
 				Text(
 					text = SimpleDateFormat.getDateInstance().format(comment.writtenAt),
-					style = MaterialTheme.typography.bodyMedium,
-					color = MaterialTheme.typography.bodyMedium.color.copy(
-						alpha = 0.5f
-					)
+					style = MaterialTheme.typography.bodySmall,
 				)
 			}
 		}

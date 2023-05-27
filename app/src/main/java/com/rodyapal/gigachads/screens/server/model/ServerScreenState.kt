@@ -8,8 +8,9 @@ sealed class ServerScreenState {
 	object Loading : ServerScreenState()
 	data class Info(
 		val server: Server,
-		val latestPost: Post,
-		val gameName: String
+		val latestPost: Post?,
+		val gameName: String,
+		val isFavorite: Boolean
 	) : ServerScreenState()
 
 	data class Posts(

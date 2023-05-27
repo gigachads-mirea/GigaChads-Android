@@ -3,8 +3,6 @@ package com.rodyapal.gigachads.screens.serverposts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rodyapal.gigachads.model.Reducer
-import com.rodyapal.gigachads.model.entity.Post
-import com.rodyapal.gigachads.model.entity.Server
 import com.rodyapal.gigachads.model.repository.PostRepository
 import com.rodyapal.gigachads.model.repository.ServerRepository
 import com.rodyapal.gigachads.model.repository.UserRepository
@@ -14,7 +12,6 @@ import com.rodyapal.gigachads.screens.serverposts.model.ServerPostsScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
 class ServerPostsViewModel(
@@ -39,8 +36,8 @@ class ServerPostsViewModel(
 							)
 						}
 					} else {
-						serverRepository.getServers(ids)
-							.zip(postRepository.getPostsForServers(ids)) { servers: List<Server>, posts: List<List<Post>?> ->
+						serverRepository.getServers(ids).collect { servers ->
+							postRepository.getPostsForServers(ids).collect {posts ->
 								_viewState.update {
 									ServerPostsScreenState.Display(
 										serversWithPosts = servers.mapIndexed { index, server ->
@@ -52,6 +49,7 @@ class ServerPostsViewModel(
 									)
 								}
 							}
+						}
 					}
 				}
 			}

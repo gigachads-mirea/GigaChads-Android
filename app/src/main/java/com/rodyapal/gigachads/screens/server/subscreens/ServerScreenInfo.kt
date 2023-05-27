@@ -13,7 +13,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -54,7 +56,8 @@ fun ServerScreenInfo(
 			onClick = onAddToFavoriteClick
 		) {
 			Icon(
-				imageVector = Icons.Default.Add,
+				modifier = Modifier.padding(end = ButtonDefaults.IconSpacing),
+				imageVector = if (state.isFavorite) Icons.Default.Check else Icons.Default.Add,
 				contentDescription = stringResource(R.string.description_add_server_to_favorite)
 			)
 			Text(text = stringResource(R.string.text_to_favorite))
@@ -95,33 +98,35 @@ private fun HeaderDescriptionPosts(
 
 			Spacer(modifier = Modifier.height(12.dp))
 
-			TextButton(
-				onClick = onSeeOtherPostsClick,
-				contentPadding = PaddingValues(horizontal = 0.dp)
-			) {
-				Text(
-					text = stringResource(R.string.text_latest_news),
-					style = MaterialTheme.typography.titleLarge
-				)
+			if (state.latestPost != null) {
+				TextButton(
+					onClick = onSeeOtherPostsClick,
+					contentPadding = PaddingValues(horizontal = 0.dp)
+				) {
+					Text(
+						text = stringResource(R.string.text_latest_news),
+						style = MaterialTheme.typography.titleLarge
+					)
 
-				Spacer(modifier = Modifier.width(8.dp))
+					Spacer(modifier = Modifier.width(8.dp))
 
-				Icon(
-					imageVector = Icons.Default.KeyboardArrowRight,
-					contentDescription = stringResource(R.string.description_see_other_posts)
+					Icon(
+						imageVector = Icons.Default.KeyboardArrowRight,
+						contentDescription = stringResource(R.string.description_see_other_posts)
+					)
+				}
+
+				Spacer(modifier = Modifier.height(4.dp))
+
+				PostCard(
+					modifier = Modifier.padding(end = 12.dp),
+					post = state.latestPost,
+					serverName = state.server.name,
+					onReadClick = {
+						onReadPostClicked(state.latestPost.id)
+					}
 				)
 			}
-
-			Spacer(modifier = Modifier.height(4.dp))
-
-			PostCard(
-				modifier = Modifier.padding(end = 12.dp),
-				post = state.latestPost,
-				serverName = state.server.name,
-				onReadClick = {
-					onReadPostClicked(state.latestPost.id)
-				}
-			)
 		}
 	}
 }

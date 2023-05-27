@@ -35,6 +35,9 @@ class PostRepository(
 		return dao.getByServerId(serverId).onEmpty {
 			refreshPostsForServer(serverId)
 		}.map { posts ->
+			if (posts.isEmpty()) {
+				refreshPostsForServer(serverId)
+			}
 			posts.map { it.toDomainModel() }
 		}
 	}

@@ -81,7 +81,8 @@ const val MOCK_GAME_NAME = "My Awesome Game"
 val MOCK_SERVER_SCREEN_STATE_INFO = ServerScreenState.Info(
 	server = MOCK_SERVER,
 	latestPost = MOCK_POSTS[0],
-	gameName = MOCK_GAME_NAME
+	gameName = MOCK_GAME_NAME,
+	true
 )
 
 @Deprecated("Dev only")

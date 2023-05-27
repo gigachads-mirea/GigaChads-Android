@@ -88,7 +88,6 @@ private fun Header(
 	TextField(
 		value = query,
 		onValueChange = {
-//			Log.d("onQueryChange", it)
 			onQueryChange(it)
 			localQuery = it
 		},

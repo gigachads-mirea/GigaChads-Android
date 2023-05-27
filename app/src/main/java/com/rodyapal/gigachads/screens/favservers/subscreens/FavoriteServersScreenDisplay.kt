@@ -42,7 +42,7 @@ fun FavoriteServersScreenDisplay(
 		items(state.servers) {
 			ServerItem(
 				modifier = Modifier
-					.padding(vertical = 6.dp, horizontal = 12.dp)
+					.padding(vertical = 8.dp, horizontal = 12.dp)
 					.fillMaxWidth()
 					.clickable {
 						onServerClick(it.serverId)

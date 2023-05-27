@@ -38,10 +38,15 @@ class ServerViewModel(
 		when (event) {
 			is ServerScreenEvent.OnAddToFavorite -> viewModelScope.launch {
 				val userId = (userRepository.authState.value as UserRepository.AuthState.Authenticated).user.userId
-				if (serverRepository.isFavorite(userId, state.server.serverId)) {
-					serverRepository.setFavorite(userId, state.server.serverId)
+				if (!serverRepository.isFavorite(state.server.serverId, userId)) {
+					serverRepository.setFavorite(state.server.serverId, userId)
 				} else {
-					serverRepository.removeFavorite(userId, state.server.serverId)
+					serverRepository.removeFavorite(state.server.serverId, userId)
+				}
+				_viewState.update {
+					state.copy(
+						isFavorite = !state.isFavorite
+					)
 				}
 			}
 			is ServerScreenEvent.OnSeeOtherPosts -> viewModelScope.launch {
@@ -54,13 +59,15 @@ class ServerViewModel(
 					}
 				}
 			}
+			is ServerScreenEvent.EnterScreen -> {}
 			else -> throw Exception("Invalid state ($state) for event ($event)")
 		}
 	}
 
 	private fun reduce(state: ServerScreenState.Posts, event: ServerScreenEvent) {
 		when (event) {
-			is ServerScreenEvent.OnBackToInfo -> fetchData(state.posts.first().id)
+			is ServerScreenEvent.OnBackToInfo -> fetchData(state.posts.first().serverId)
+			is ServerScreenEvent.EnterScreen -> {}
 			else -> throw Exception("Invalid state ($state) for event ($event)")
 		}
 	}
@@ -71,8 +78,9 @@ class ServerViewModel(
 				_viewState.update {
 					ServerScreenState.Info(
 						server = server,
-						latestPost = posts.maxBy { it.writtenAt },
-						gameName = gameRepository.getById(server.gameId).name
+						latestPost = posts.maxByOrNull { it.writtenAt },
+						gameName = gameRepository.getById(server.gameId).name,
+						isFavorite = serverRepository.isFavorite(serverId, (userRepository.authState.value as UserRepository.AuthState.Authenticated).user.userId)
 					)
 				}
 			}

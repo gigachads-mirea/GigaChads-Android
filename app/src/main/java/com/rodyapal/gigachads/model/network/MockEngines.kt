@@ -51,7 +51,7 @@ fun MockRequestHandleScope.respondComments(request: HttpRequestData): HttpRespon
 			headers = headersOf(HttpHeaders.ContentType, "application/json")
 		)
 	} else { //get by post id
-		val postId = request.url.fullPath.filter { it.isDigit() }.toLong()
+		val postId = request.url.fullPath.substringAfter("=").filter { it.isDigit() }.toLong()
 		respond(
 			content = Json.encodeToString(
 				COMMENTS.filter { it.parentPostId == postId }
@@ -71,7 +71,7 @@ fun MockRequestHandleScope.respondGames(): HttpResponseData {
 }
 
 fun MockRequestHandleScope.respondPosts(request: HttpRequestData): HttpResponseData {
-	val id = request.url.fullPath.filter { it.isDigit() }.toLong()
+	val id = request.url.fullPath.substringAfter("=").filter { it.isDigit() }.toLong()
 	return if (request.url.fullPath.contains("byServer")) { //get by server id
 		respond(
 			content = Json.encodeToString(
