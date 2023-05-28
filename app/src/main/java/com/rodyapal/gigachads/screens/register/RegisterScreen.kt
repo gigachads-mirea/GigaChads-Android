@@ -21,6 +21,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,11 +49,15 @@ fun RegisterScreen(
 	viewModel: RegisterViewModel = koinViewModel()
 ) {
 	val state = viewModel.viewState.collectAsState()
-	if (state.value.isError) {
-		onError()
+	LaunchedEffect (key1 = state.value.isError) {
+		if (state.value.isError) {
+			onError()
+		}
 	}
-	if (state.value.showSuccessMessage) {
-		onRegistered()
+	LaunchedEffect(key1 = state.value.showSuccessMessage) {
+		if (state.value.showSuccessMessage) {
+			onRegistered()
+		}
 	}
 	RegisterScreenDisplay(
 		state = state.value,
@@ -232,7 +237,8 @@ fun RegisterScreenDisplay(
 			modifier = Modifier.fillMaxWidth()
 		) {
 			Button(
-				onClick = onRegisterClick
+				onClick = onRegisterClick,
+				enabled = state.isValid()
 			) {
 				Text(text = stringResource(R.string.text_sign_up))
 			}
