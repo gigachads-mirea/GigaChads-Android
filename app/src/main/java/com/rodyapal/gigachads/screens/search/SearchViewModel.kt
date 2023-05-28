@@ -95,6 +95,7 @@ class SearchViewModel(
 				serverRepository.setWasSearched(event.serverId)
 			}
 
+			is SearchScreenEvent.EnterScreen -> {}
 			else -> throw Exception("Invalid state ($state) for event ($event)")
 		}
 	}
