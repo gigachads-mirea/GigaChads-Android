@@ -13,6 +13,9 @@ interface PostDao {
 	@Query("SELECT * FROM posts WHERE serverId = :id")
 	fun getByServerId(id: Long): Flow<List<PostEntity>>
 
+	@Query("SELECT * FROM POSTS WHERE serverId in (:ids)")
+	fun getByServerIds(ids: List<Long>): Flow<List<PostEntity>>
+
 	@Query("SELECT * FROM posts WHERE id = :id")
 	fun getById(id: Long): Flow<PostEntity>
 

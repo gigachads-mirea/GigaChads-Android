@@ -37,4 +37,5 @@
     <string name="description_server_posts_screen">News from favorite servers</string>
     <string name="text_no_news">No news here</string>
     <string name="text_no_search_history">You haven\'t searched anything yet</string>
+    <string name="text_no_posts">No news</string>
 </resources>

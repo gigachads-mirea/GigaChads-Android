@@ -11,6 +11,7 @@ import com.rodyapal.gigachads.screens.serverposts.model.ServerPostsScreenEvent
 import com.rodyapal.gigachads.screens.serverposts.model.ServerPostsScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -36,19 +37,17 @@ class ServerPostsViewModel(
 							)
 						}
 					} else {
-						serverRepository.getServers(ids).collect { servers ->
-							postRepository.getPostsForServers(ids).collect {posts ->
-								_viewState.update {
-									ServerPostsScreenState.Display(
-										serversWithPosts = servers.mapIndexed { index, server ->
-											PostsForServer(
-												serverName = server.name,
-												posts = posts[index]!!
-											)
-										}
+						val servers = serverRepository.getServers(ids).first { true }
+						val posts = postRepository.getPostsForServers(ids).first { true }
+						_viewState.update {
+							ServerPostsScreenState.Display(
+								serversWithPosts = servers.map { server ->
+									PostsForServer(
+										serverName = server.name,
+										posts = posts.filter { it.serverId == server.serverId }
 									)
 								}
-							}
+							)
 						}
 					}
 				}

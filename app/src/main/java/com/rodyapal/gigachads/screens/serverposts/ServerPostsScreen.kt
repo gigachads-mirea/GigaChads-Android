@@ -121,18 +121,25 @@ fun ServerPostsScreenDisplay(
 							.height(4.dp)
 						)
 
-						LazyRow {
-							items(posts) {
-								PostCard(
-									modifier = Modifier.fillParentMaxWidth(),
-									post = it,
-									serverName = "",
-									onReadClick = {
-										onReadPostClick(it.id)
-									}
-								)
-								Spacer(modifier = Modifier.width(8.dp))
+						if (posts.isNotEmpty()) {
+							LazyRow {
+								items(posts) {
+									PostCard(
+										modifier = Modifier.fillParentMaxWidth(),
+										post = it,
+										serverName = "",
+										onReadClick = {
+											onReadPostClick(it.id)
+										}
+									)
+									Spacer(modifier = Modifier.width(8.dp))
+								}
 							}
+						} else {
+							Text(
+								text = stringResource(R.string.text_no_posts),
+								style = MaterialTheme.typography.bodyMedium,
+							)
 						}
 					}
 				}
