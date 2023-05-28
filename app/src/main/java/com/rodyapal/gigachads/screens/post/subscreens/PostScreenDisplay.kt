@@ -2,7 +2,7 @@ package com.rodyapal.gigachads.screens.post.subscreens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,7 +35,6 @@ fun PostScreenDisplay(
 	Column(
 		modifier = modifier
 			.fillMaxSize()
-			.verticalScroll(rememberScrollState())
 	) {
 		Header(
 			modifier = Modifier
@@ -50,7 +49,7 @@ fun PostScreenDisplay(
 
 		PostBody(
 			modifier = Modifier
-				.fillMaxWidth()
+				.fillMaxSize()
 				.padding(12.dp),
 			content = state.post.content,
 			onViewCommentsClick = onViewCommentsClick
@@ -73,24 +72,15 @@ private fun Header(
 			style = MaterialTheme.typography.bodyLarge
 		)
 
-		Row(
-			modifier = Modifier.fillMaxWidth(),
-			horizontalArrangement = Arrangement.SpaceBetween,
-			verticalAlignment = Alignment.Bottom
-		) {
-			Text(
-				text = postTitle,
-				style = MaterialTheme.typography.headlineLarge
-			)
+		Text(
+			text = postTitle,
+			style = MaterialTheme.typography.headlineLarge
+		)
 
-			Text(
-				text = creationTime,
-				style = MaterialTheme.typography.bodyMedium,
-				color = MaterialTheme.typography.bodyMedium.color.copy(
-					alpha = 0.5f
-				)
-			)
-		}
+		Text(
+			text = creationTime,
+			style = MaterialTheme.typography.bodyMedium,
+		)
 	}
 }
 
@@ -101,7 +91,8 @@ private fun PostBody(
 	onViewCommentsClick: () -> Unit,
 ) {
 	Column(
-		modifier = modifier
+		modifier = modifier.verticalScroll(rememberScrollState()),
+		verticalArrangement = Arrangement.SpaceBetween
 	) {
 		Text(
 			text = content,
@@ -109,15 +100,15 @@ private fun PostBody(
 			textAlign = TextAlign.Justify
 		)
 
-		Spacer(modifier = Modifier.height(4.dp))
-
-		Row(
+		Column(
 			modifier = Modifier.fillMaxWidth(),
-			horizontalArrangement = Arrangement.End,
-			verticalAlignment = Alignment.CenterVertically
+			horizontalAlignment = Alignment.End
 		) {
+			Spacer(modifier = Modifier.height(4.dp))
+
 			TextButton(
-				onClick = onViewCommentsClick
+				onClick = onViewCommentsClick,
+				contentPadding = PaddingValues(end = 0.dp)
 			) {
 				Text(text = stringResource(R.string.text_view_comments))
 			}
